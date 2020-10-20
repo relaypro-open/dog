@@ -11,7 +11,7 @@
 7. [Logical Elements](#logical-elements)
 
 ## What is dog?
-dog is a centralized firewall management system designed to manage hundreds+ of servers.
+dog is a firewall management system designed to manage hundreds+ of servers.
 
 Think of it as your guard dog.
 
