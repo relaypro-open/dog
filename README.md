@@ -1,14 +1,17 @@
 <p align="center">
   <img src="docs/dog-segmented-green.network-400x400.png">
 </p>
+<span style="color:4AFA00;font-size:3vw">dog</span>
+<br>
+<br>
 
-1. [What is dog?](#what-is-dog?)
-2. [Why dog?](#why-dog?)
-3. [Features](#features)
-4. [Components](#components)
-5. [Architecture](#architecture)
-6. [Security](#security)
-7. [Logical Elements](#logical-elements)
+* [What is dog?](#what-is-dog?)
+* [Why dog?](#why-dog?)
+* [Features](#features)
+* [Components](#components)
+* [Architecture](#architecture)
+* [Security](#security)
+* [Logical Elements](#logical-elements)
 
 ## What is dog?
 dog is a firewall management system designed to manage hundreds+ of servers.
@@ -44,7 +47,7 @@ Think of it as your guard dog.
 - [dog_park](https://bitbucket.org/republicwireless/dog_park/src/master/) is the browser user interface for dog_trainer.
 
 ## Architecture
-![dog](docs/dog_family_overview_landscape-1.1.jpg)
+![dog](docs/dog_family_overview_landscape-1.1.png)
 - dog Agents communicate with dog_trainer over RabbitMQ queues.
 - dog_trainer stores it's configuration in a RethinkDB database.
 - dog_park communicates with dog_park via a RESTful API, which can be used for further integrations.
