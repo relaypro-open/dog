@@ -1,0 +1,116 @@
+<!DOCTYPE html>
+<html lang="en-US">
+  <head>
+    <meta charset='utf-8'>
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <link rel="stylesheet" href="assets/css/style.css">
+  </head>
+
+  <body>
+
+    <div class="container">
+      <section id="main_content">
+        <p align="center">
+        <img src="docs/dog-segmented-green.network-400x400.png" />
+        </p>
+      <div class="container">
+        <a id="a-title" href="/dog/">
+          <h1>dog</h1>
+        </a>
+        <h2>A firewall management system.</h2>
+
+      </div>
+
+        <ul>
+          <li><a href="#what-is-dog?">What is dog?</a></li>
+          <li><a href="#why-dog?">Why dog?</a></li>
+          <li><a href="#features">Features</a></li>
+          <li><a href="#components">Components</a></li>
+          <li><a href="#architecture">Architecture</a></li>
+          <li><a href="#security">Security</a></li>
+          <li><a href="#logical-elements">Logical Elements</a></li>
+        </ul>
+
+        <h2 id="what-is-dog">What is dog?</h2>
+        <p>dog is a firewall management system designed to manage hundreds+ of servers.</p>
+
+        <p>Think of it as your guard dog.</p>
+
+        <h2 id="why-dog">Why dog?</h2>
+        <ul>
+          <li>Need consistent network access rules across hundreds+ of servers in multiple regions on multiple providers?</li>
+          <li>Need defense-in-depth, beyond gateway firewalls?</li>
+          <li>Need blocklists with thousands of addresses distributed across many servers updated constantly?</li>
+          <li>Need to limit number of connections and/or bandwidth usage?</li>
+          <li>Sick of error-prone manual updates of per-server iptables?</li>
+        </ul>
+
+        <h2 id="features">Features</h2>
+        <ul>
+          <li>Centrally manage hundreds+ of per-server iptables firewalls.</li>
+          <li>Works across clouds, regions, and on-premise infrastructure.</li>
+          <li>Adapts to dynamic address changes.</li>
+          <li>Large blocklists/allowlists can be used and will be updated in seconds across all servers.</li>
+          <li>Rules scale to tens of thousands of addresses (ipsets).</li>
+          <li>Alerts if servers fail to communicate or if their firewalls are modified outside of dog control.</li>
+          <li>Nice web interface.</li>
+          <li>API for external integrations.</li>
+          <li>Tested in production with hundreds of servers.</li>
+          <li>Multiple dog_trainers can be federated together to allow sharing of addresses, 
+            while allowing each dog_trainer to have it’s own security rules.</li>
+        </ul>
+
+        <h2 id="components">Components</h2>
+        <ul>
+          <li>
+            <p><a href="https://github.com/Phonebooth/dog_trainer">dog_trainer</a> is a central server, used to configure and control dog agents.<br />
+            Multiple dog_trainers can be federated together to allow sharing of agents’ addresses, while allowing each dog_trainer to have it’s own security rules.</p>
+          </li>
+          <li>
+            <p><a href="https://github.com/Phonebooth/dog_agent">dog agent</a>s are deployed to all managed servers.  dog agents control the server’s iptables firewalls.</p>
+          </li>
+          <li>
+            <p><a href="https://bitbucket.org/republicwireless/dog_park/src/master/">dog_park</a> is the browser user interface for dog_trainer.</p>
+          </li>
+        </ul>
+
+        <h2 id="architecture">Architecture</h2>
+        <p><img src="docs/dog_family_overview_landscape-1.1.png" alt="dog" /></p>
+        <ul>
+          <li>dog Agents communicate with dog_trainer over RabbitMQ queues.</li>
+          <li>dog_trainer stores it’s configuration in a RethinkDB database.</li>
+          <li>dog_park communicates with dog_park via a RESTful API, which can be used for further integrations.</li>
+        </ul>
+
+        <h2 id="security">Security</h2>
+        <ul>
+          <li>Provides defense-in-depth, so you are not completely dependent on gateway firewalls.</li>
+          <li>dog agents authenticate to RabbitMQ with per-agent client certificates, and all communication is encrypted.</li>
+          <li>RabbitMQ should be configured to only communicate over private networks.</li>
+          <li>Additional federated RabbitMQs can be configured to allow communication over regional boundaries.</li>
+          <li>dog_trainer stores hashes of the iptables and ipsets it sends to agents.  Agents send their own generated hashes to dog_trainer via a scheduled check-in.</li>
+          <li>dog_trainer will alert if agents fail to communicate over time or if the hashes the agents provide do not match what dog_trainer expects.</li>
+          <li>dog’s use of ipsets not only allows highly scalable, fast rulesets, it also keeps iptables size small enough to be auditable by a human.</li>
+        </ul>
+
+        <h2 id="logical-elements">Logical Elements</h2>
+        <ul>
+          <li>Hosts are servers with Agents installed.</li>
+          <li>Zones are static lists of addresses.</li>
+          <li>Groups are collections of Hosts.</li>
+          <li>Profiles are lists of Rules, and are assigned to Groups.</li>
+          <li>Rules can include either Groups or Zones along with Services that describe the controlled protocols.</li>
+          <li>Iptables are generated from these Rules and distributed to Agents.</li>
+          <li>
+            <p>Ipsets are used to make fast, readable iptables rules even with thousands of addresses.</p>
+          </li>
+          <li>Links are used to share the addresses of Groups and Zones (as ipsets) between multiple dog_trainers.</li>
+        </ul>
+
+      </section>
+    </div>
+
+
+  </body>
+</html>
