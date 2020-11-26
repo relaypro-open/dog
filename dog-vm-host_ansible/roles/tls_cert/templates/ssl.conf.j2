@@ -1,0 +1,65 @@
+[ ca ]
+default_ca = dog
+
+[ req ]
+distinguished_name = req_distinguished_name
+req_extensions = v3_req
+prompt = no
+
+[ req_distinguished_name ]
+C = US
+ST = NC
+L = Raleigh
+O = republicwireless
+OU = Product
+CN = {{ inventory_hostname }}
+
+[ v3_req ]
+keyUsage = keyEncipherment, dataEncipherment
+extendedKeyUsage = serverAuth
+subjectAltName = @alt_names
+
+[ v3_ca ]
+basicConstraints = CA:TRUE
+subjectKeyIdentifier = hash
+authorityKeyIdentifier = keyid:always,issuer:always
+ 
+[ alt_names ]
+DNS.1 = {{ inventory_hostname }}
+DNS.2 = localhost
+DNS.4 = 127.0.0.1
+
+[ crl_ext ]
+# issuerAltName=issuer:copy  #this would copy the issuer name to altname
+authorityKeyIdentifier=keyid:always
+
+[ dog ]
+new_certs_dir = /tmp/dog/ssl/
+unique_subject = no
+certificate = dog-root.cer
+database = /tmp/dog/ssl/certindex
+private_key = private.pem
+serial = /tmp/dog/ssl/serial
+default_days = 1825
+default_bits = 2048
+default_md = sha256
+policy = dog_policy
+x509_extensions = dog_extensions
+email_in_dn = no
+copy_extensions = copy
+
+[ dog_policy ]
+commonName = supplied
+stateOrProvinceName = supplied
+countryName = supplied
+emailAddress = optional
+organizationName = supplied
+organizationalUnitName = optional
+
+[ dog_extensions ]
+basicConstraints = CA:false
+subjectKeyIdentifier = hash
+authorityKeyIdentifier = keyid:always
+keyUsage = digitalSignature,keyEncipherment
+extendedKeyUsage = serverAuth,clientAuth
+crlDistributionPoints = URI:http://ca.dog/dog.crl

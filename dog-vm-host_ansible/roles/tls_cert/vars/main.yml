@@ -1,0 +1,4 @@
+---
+dog_data_dir: /var/consul/data
+dog_config_dir: /etc/dog.d/
+dog_run_dir: /var/run/dog

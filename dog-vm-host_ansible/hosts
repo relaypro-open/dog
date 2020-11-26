@@ -1,0 +1,4 @@
+[containers]
+dog-server ansible_connection=lxd
+dog-agent1 ansible_connection=lxd
+dog-agent2 ansible_connection=lxd

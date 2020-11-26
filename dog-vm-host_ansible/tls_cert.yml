@@ -1,0 +1,5 @@
+---
+- hosts: containers
+
+  roles:
+    - tls_cert
