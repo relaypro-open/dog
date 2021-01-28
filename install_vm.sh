@@ -25,8 +25,6 @@ vagrant up
 
 vagrant ssh-config | tee -a ~/.ssh/config
 
-scp -r dog-vm-host_ansible dog-vm-host:ansible
-
 echo "how to connect: 
 vagrant ssh 
 or

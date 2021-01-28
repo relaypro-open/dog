@@ -25,8 +25,10 @@ lxc restart dog-agent2
 #apt-get install -y python3-pip
 apt-get install -y ansible=2.9.6+dfsg-1
 ansible-galaxy collection install community.general
-mkdir ansible
-date +%s | sha256sum | base64 | head -c 32 > ansible/ca_passphrase.txt
+#/ansible directory shared via vangrant sync folder
+date +%s | sha256sum | base64 | head -c 32 > /ansible/ca_passphrase.txt
+cd /ansible
+ansible-playbook -i hosts main.yml
 SCRIPT
 
 # All Vagrant configuration is done below. The '2' in Vagrant.configure
@@ -55,6 +57,7 @@ Vagrant.configure('2') do |config|
     # config.vm.provider :libvirt do |libvirt|
     config.vm.provider :virtualbox do |v|
       config.vm.hostname = 'dog-vm-host'
+      config.vm.synced_folder 'ansible/', '/ansible'
       v.name = 'dog-vm-host'
       v.check_guest_additions = true
       v.gui = false
