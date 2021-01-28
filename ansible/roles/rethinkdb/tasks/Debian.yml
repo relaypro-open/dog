@@ -1,0 +1,32 @@
+---
+- debug: var=rethinkdb_data_dir
+
+- name: install rethinkdb repo
+  shell: . /etc/lsb-release && echo "deb https://download.rethinkdb.com/repository/ubuntu-$DISTRIB_CODENAME $DISTRIB_CODENAME main" | sudo tee /etc/apt/sources.list.d/rethinkdb.list
+  #shell: . /etc/lsb-release && echo "deb http://download.rethinkdb.com/apt $DISTRIB_CODENAME main" | tee /etc/apt/sources.list.d/rethinkdb.list
+
+- name: install repo key
+  shell: wget -qO- https://download.rethinkdb.com/repository/raw/pubkey.gpg | sudo apt-key add -v -
+  #shell: wget -qO- https://download.rethinkdb.com/apt/pubkey.gpg | apt-key add -
+
+- name: install rethinkdb
+  apt: name=rethinkdb='{{ rethinkdb_apt_version }}' state=present update_cache=yes
+
+- name: install python3-pip
+  apt: name=python3-pip state=present 
+
+- name: create '{{ rethinkdb_data_dir }}'
+  file: path='{{ rethinkdb_data_dir }}' state=directory mode=0700 owner=rethinkdb group=rethinkdb
+
+- debug: var=rethinkdb_config_template
+
+- name: copy rethinkdb config template
+  template: src='{{ rethinkdb_config_template }}' dest=/etc/rethinkdb/instances.d/rethink.conf owner=rethinkdb group=rethinkdb mode=600
+
+- name: create /var/log/rethinkdb
+  file: path=/var/log/rethinkdb state=directory mode=0755 owner=rethinkdb group=rethinkdb
+
+- service: name=rethinkdb state=restarted enabled=yes
+
+- name: install rethinkdb python package
+  command: /usr/bin/pip3 install rethinkdb

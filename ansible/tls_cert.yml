@@ -1,0 +1,5 @@
+---
+- hosts: containers
+
+  roles:
+    - consul_tls_cert

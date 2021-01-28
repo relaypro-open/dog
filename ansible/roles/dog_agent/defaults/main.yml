@@ -1,0 +1,4 @@
+---
+broker>cert.pem: "{{ lookup('credstash', 'broker>cert.pem', table='credential-store_mob_' + env, region='us-east-1') }}"
+broker>key.pem: "{{ lookup('credstash', 'broker>key.pem', table='credential-store_mob_' + env, region='us-east-1') }}"
+broker>cacert.pem: "{{ lookup('credstash', 'broker>cacert.pem', table='credential-store_mob_' + env, region='us-east-1') }}"

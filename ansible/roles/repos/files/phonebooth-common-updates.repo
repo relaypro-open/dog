@@ -1,0 +1,5 @@
+[phonebooth-common-updates]
+name=phonebooth-common-updates
+baseurl=http://yum.phoneboothdev.info:9090/repo/phonebooth/
+enabled=1
+gpgcheck=0

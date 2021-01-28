@@ -1,0 +1,4 @@
+check process rethinkdb with pidfile /var/run/rethinkdb/rethinkdb.pid
+    start program = "/etc/init.d/rethinkdb start"
+    stop program = "/etc/init.d/rethinkdb stop"
+    group rethinkdb

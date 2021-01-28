@@ -1,0 +1,6 @@
+#!/bin/bash
+export BINDIR=/opt/dog/erts-{{ lookup('env','erts_version') }}/bin
+export HOME=/opt/dog
+export HOSTKEY=$(sha1sum /var/consul/data/pki/certs/server.crt | cut -d' ' -f1)
+
+/opt/dog/erts-{{ lookup('env','erts_version') }}/bin/erlexec -boot /opt/dog/releases/{{ lookup('env','dog_env') }}-{{ lookup('env','UPSTREAM_BUILD_ID') }}/start -mode embedded -config /opt/dog/releases/{{ lookup('env','dog_env') }}-{{ lookup('env','UPSTREAM_BUILD_ID') }}/sys.config -noinput -start_epmd false 

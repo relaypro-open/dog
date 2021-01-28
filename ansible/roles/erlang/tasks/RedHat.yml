@@ -1,0 +1,5 @@
+---
+
+- name: install erlang
+  yum: name=erlang-{{ erlang_version }} state=present
+  when: erlang_version is defined

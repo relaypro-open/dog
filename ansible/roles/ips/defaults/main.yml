@@ -1,0 +1,2 @@
+AWS_ACCESS_KEY: "{{ lookup('credstash','ansible>access_key', table='credential-store', region='us-east-1') }}"
+AWS_SECRET_ACCESS_KEY: "{{ lookup('credstash','ansible>secret_key', table='credential-store', region='us-east-1') }}"

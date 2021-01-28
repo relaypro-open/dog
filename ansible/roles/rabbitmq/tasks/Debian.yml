@@ -1,0 +1,13 @@
+---
+
+- name: install rabbitmq apt repo key
+  shell: wget -O- https://dl.bintray.com/rabbitmq/Keys/rabbitmq-release-signing-key.asc | apt-key add -  
+  when: ansible_os_family == 'Debian'
+
+- name: install rabbitmq apt repo
+  shell: echo "deb https://dl.bintray.com/rabbitmq/debian bionic main" > /etc/apt/sources.list.d/bintray.rabbitmq.list
+  when: ansible_os_family == 'Debian'
+
+- name: install rabbitmq
+  apt: name=rabbitmq-server={{ rabbitmq_apt_version }} state=present update_cache=yes
+  when: ansible_os_family == 'Debian'

@@ -1,0 +1,42 @@
+---
+- name: create rabbitmq group
+  group: name=rabbitmq gid=9497
+
+- name: create rabbitmq user
+  user: name=rabbitmq uid=9497 group=rabbitmq
+
+- include: RedHat.yml
+  when: ansible_os_family  == "RedHat"
+
+# Ubuntu specific package installations
+- include: Debian.yml
+  when: ansible_os_family  == "Debian"
+
+- name: enable rabbitmq plugins
+  rabbitmq_plugin: names=rabbitmq_management state=enabled
+  notify:
+  - start rabbitmq
+
+- name: copy rabbitmq config local - new style .conf
+  template: src=templates/rabbitmq.conf.j2 dest=/etc/rabbitmq/rabbitmq.conf
+  notify:
+  - restart rabbitmq
+
+- name: copy rabbitmq enabled_plugins
+  template: src=templates/enabled_plugins.j2 dest=/etc/rabbitmq/enabled_plugins
+  notify:
+  - restart rabbitmq
+
+- name: setup rabbitmq-server service
+  service: name=rabbitmq-server enabled=yes state=started   
+
+- name: wait for rabbitmq to start
+  wait_for: port=15672 delay=10
+    
+- name: add users
+  rabbitmq_user: user={{item}} password=changeme tags=administrator,{{item}} vhost=/ configure_priv=.* write_priv=.* read_priv=.* state=present
+  with_items:
+  - admin
+
+- name: remove default guest user
+  rabbitmq_user: user=guest state=absent

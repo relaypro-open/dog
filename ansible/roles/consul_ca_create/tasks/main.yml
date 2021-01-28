@@ -1,0 +1,47 @@
+---
+- name: create ramdisk
+  mount:
+    path: /tmp/consul
+    src: none
+    fstype: ramfs
+    opts: size=10m
+    state: mounted
+  become: yes
+
+- name: create /tmp/ca/
+  become: yes
+  file: path=/tmp/ca state=directory mode=0750 owner=vagrant group=vagrant
+
+- name: create /tmp/consul/
+  become: yes
+  file: path=/tmp/consul/ state=directory mode=0750 owner=vagrant group=vagrant
+
+- name: create /tmp/consul/ssl
+  become: yes
+  file: path=/tmp/consul/ssl state=directory mode=0750 owner=vagrant group=vagrant
+
+- name: create /tmp/consul/ca
+  become: yes
+  file: path=/tmp/consul/ca state=directory mode=0750 owner=vagrant group=vagrant
+
+- name: set CN to inventory_hostname.consul
+  set_fact: 
+    cn: "consul"
+
+- name: create ssl conf
+  template: dest=/tmp/consul/ssl/ssl.conf src=templates/ssl.conf.j2
+
+- name: create /tmp/consul/ssl/certindex
+  become: yes
+  file: path=/tmp/consul/ssl/certindex state=touch owner=vagrant group=vagrant
+
+- name: serial line
+  lineinfile: dest=/tmp/consul/ssl/serial create=yes regexp="^000a$" line="000a"
+
+- name: add extended keyusage to openssl config
+  become: yes
+  lineinfile: dest=/etc/openssl/openssl.cnf line="extendedKeyUsage=serverAuth,clientAuth" regexp="^extendedKeyUsage=(.*)" create=yes
+
+- name: generate root certificate
+  #command: openssl req -newkey rsa:2048 -days 3650 -x509 -out consul-root.cer -keyout private.pem -config /tmp/consul/ssl/ssl.conf -extensions v3_ca -passout file:ca_passphrase.txt
+  command: openssl req -newkey rsa:2048 -days 3650 -x509 -nodes -out /tmp/consul/ca/consul-root.cer -keyout /tmp/consul/ca/private.pem -config /tmp/consul/ssl/ssl.conf -extensions v3_ca

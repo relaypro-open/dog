@@ -1,0 +1,66 @@
+[ ca ]
+default_ca = consul
+
+[ req ]
+distinguished_name = req_distinguished_name
+req_extensions = v3_req
+prompt = no
+
+[ req_distinguished_name ]
+C = US
+ST = NC
+L = Raleigh
+O = republicwireless
+OU = Product
+CN = {{ inventory_hostname }}
+
+[ v3_req ]
+keyUsage = keyEncipherment, dataEncipherment
+extendedKeyUsage = serverAuth
+subjectAltName = @alt_names
+
+[ v3_ca ]
+basicConstraints = CA:TRUE
+subjectKeyIdentifier = hash
+authorityKeyIdentifier = keyid:always,issuer:always
+ 
+[ alt_names ]
+DNS.1 = {{ inventory_hostname }}
+DNS.2 = {{ inventory_hostname }}.node.consul
+DNS.3 = localhost
+DNS.4 = 127.0.0.1
+
+[ crl_ext ]
+# issuerAltName=issuer:copy  #this would copy the issuer name to altname
+authorityKeyIdentifier=keyid:always
+
+[ consul ]
+new_certs_dir = /tmp/consul/ssl/
+unique_subject = no
+certificate = /tmp/consul/ca/consul-root.cer
+database = /tmp/consul/ssl/certindex
+private_key = /tmp/consul/ca/private.pem
+serial = /tmp/consul/ssl/serial
+default_days = 1825
+default_bits = 2048
+default_md = sha256
+policy = consul_policy
+x509_extensions = consul_extensions
+email_in_dn = no
+copy_extensions = copy
+
+[ consul_policy ]
+commonName = supplied
+stateOrProvinceName = supplied
+countryName = supplied
+emailAddress = optional
+organizationName = supplied
+organizationalUnitName = optional
+
+[ consul_extensions ]
+basicConstraints = CA:false
+subjectKeyIdentifier = hash
+authorityKeyIdentifier = keyid:always
+keyUsage = digitalSignature,keyEncipherment
+extendedKeyUsage = serverAuth,clientAuth
+crlDistributionPoints = URI:http://ca.consul/consul.crl

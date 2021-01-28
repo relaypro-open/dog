@@ -1,0 +1,5 @@
+---
+consul_data_dir: /var/consul/data
+consul_config_dir: /etc/consul.d/
+consul_run_dir: /var/run/consul
+consul_ui_dir: var/consul/ui

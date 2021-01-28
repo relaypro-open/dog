@@ -1,0 +1,30 @@
+---
+- name: Add the group 'consul'
+  group:
+    name: consul
+    state: present
+    gid: 1041
+- name: Add the user 'consul'
+  user:
+    name: consul
+    uid: 1041
+    group: consul
+- name: Add the group 'dog'
+  group:
+    name: dog
+    state: present
+    gid: 1040
+- name: Add the user 'dog'
+  user:
+    name: dog
+    uid: 1040
+    group: dog
+    groups: 
+      - consul
+- name: add to sudo.d to account if applicable
+  lineinfile: 
+    dest: /etc/sudoers.d/dog 
+    state: present 
+    create: true 
+    line: 'dog ALL = NOPASSWD: ALL'
+    mode: 0440

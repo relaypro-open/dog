@@ -1,0 +1,78 @@
+---
+
+- hosts: "server"
+  become: yes
+
+  pre_tasks:
+  - name: add rabbitmq user to consul group
+    user:
+      name: rabbitmq
+      groups: consul
+      append: yes
+
+  - name: copy esl-erlang package
+    copy:
+      src: /ansible/files/esl-erlang_23.2-1~ubuntu~xenial_amd64.deb
+      dest: /tmp/esl-erlang_23.2-1~ubuntu~xenial_amd64.deb
+
+  - name: apt install esl-erlang
+    apt:
+      deb: /tmp/esl-erlang_23.2-1~ubuntu~xenial_amd64.deb
+      state: present
+
+  - name: apt install rabbitmq-server
+    apt:
+      name: rabbitmq-server
+      state: present
+
+  roles: 
+
+  tasks:
+
+  - name: copy rabbitmq.conf 
+    copy: src=files/rabbitmq/rabbitmq.conf  dest=/etc/rabbitmq/rabbitmq.conf owner=root group=rabbitmq
+    when: ansible_os_family == "Debian" and env == "box"
+    notify:
+      - reload systemd
+      - restart rabbitmq
+  
+  - name: copy rabbitmq enable_plugins
+    copy: src=files/rabbitmq/enabled_plugins dest=/etc/rabbitmq/enabled_plugins owner=root group=rabbitmq
+    when: ansible_os_family == "Debian" and env == "box"
+    notify:
+      - reload systemd
+      - restart rabbitmq
+
+  - name: start rabbitmq
+    service: name=rabbitmq-server state=started enabled=true
+
+  - name: create rabbitmq dog vhost
+    rabbitmq_vhost:
+      name: dog
+      state: present
+
+  - name: add dog_trainer rabbitmq user
+    rabbitmq_user: user="{{ lookup('credstash','dog_trainer>rabbitmq_username', table='credential-store_' + cluster + cluster_separator + env, region='us-east-1') }}" password="{{ lookup('credstash','dog_trainer>rabbitmq_password', table='credential-store_' + cluster + cluster_separator + env, region='us-east-1') }}" tags=administrator,dog_trainer vhost=dog configure_priv=.* write_priv=.* read_priv=.* state=present
+    when: env != "box"
+
+  - name: add dog_trainer rabbitmq user
+    rabbitmq_user: user="dog_trainer" password="dog_trainer1" tags=administrator,dog_trainer vhost=dog configure_priv=.* write_priv=.* read_priv=.* state=present
+    when: env == "box"
+
+  - name: add dog rabbitmq user
+    rabbitmq_user: user="{{ lookup('credstash','dog>rabbitmq_username', table='credential-store_' + cluster + cluster_separator + env, region='us-east-1') }}" password="{{ lookup('credstash','dog>rabbitmq_password', table='credential-store_' + cluster + cluster_separator + env, region='us-east-1') }}" tags=administrator,dog_trainer vhost=dog configure_priv=.* write_priv=.* read_priv=.* state=present
+    when: env != "box"
+
+  - name: add dog rabbitmq user
+    rabbitmq_user: user="dog" password="dog1" tags=administrator,dog_trainer vhost=dog configure_priv=.* write_priv=.* read_priv=.* state=present
+    when: env == "box"
+
+  handlers:
+  - name: restart rabbitmq
+    service: name=rabbitmq-server state=restarted enabled=true
+
+  - name: start rabbitmq
+    service: name=rabbitmq-server state=started enabled=true
+
+  - name: reload systemd
+    command: systemctl daemon-reload

@@ -1,0 +1,12 @@
+---
+#dependencies
+  - name: install iptables,iptables-persistent,ipset
+    apt: 
+      name:
+        - iptables
+        - iptables-persistent
+        - ipset
+      state: present
+
+  - name: copy systemd dog_trainer.service
+    copy: src=files/dog_trainer.service dest=/lib/systemd/system/dog_trainer.service

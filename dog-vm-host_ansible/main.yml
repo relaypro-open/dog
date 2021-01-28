@@ -1,9 +1,0 @@
----
-- hosts: "{{ target }}"
-  become: yes
-  gather_facts: yes
-
-  tasks:
-    - include_task: dog_user.yml
-    - include_task: ca_create.yml
-    - include_task: tls_cert.yml

@@ -1,0 +1,69 @@
+
+---
+- name: create /tmp/consul
+  file: path="/tmp/consul" state=directory mode=0770 owner=consul group=consul
+  become: yes
+
+- name: create /tmp/consul/ssl
+  file: path="/tmp/consul/ssl" state=directory mode=0770 owner=consul group=consul
+  become: yes
+
+- name: create /tmp/consul/ssl
+  file: path="/tmp/consul/ssl" state=directory mode=0700 owner={{ lookup('env', 'USER') }} group={{ lookup('env', 'USER') }}
+  connection: local
+  delegate_to: 127.0.0.1
+  become: no
+
+- name: create ssl conf
+  template: dest=/tmp/consul/ssl/ssl.{{ inventory_hostname }}.conf src=templates/ssl.conf.j2
+  connection: local
+  delegate_to: 127.0.0.1
+  become: no
+
+- name: create csr
+  shell: openssl req -new -nodes -out /tmp/consul/ssl/{{ inventory_hostname }}.consul.csr -keyout /tmp/consul/ssl/{{ inventory_hostname }}.consul.key -config /tmp/consul/ssl/ssl.{{ inventory_hostname }}.conf -newkey rsa:2048
+  connection: local
+  delegate_to: 127.0.0.1
+  become: no
+
+- name: create instance cert
+  shell: openssl ca -batch -config /tmp/consul/ssl/ssl.{{ inventory_hostname }}.conf -notext -in /tmp/consul/ssl/{{ inventory_hostname }}.consul.csr -out /tmp/consul/ssl/{{ inventory_hostname }}.consul.cer
+  connection: local
+  delegate_to: 127.0.0.1
+  become: no
+
+- name: create /var/consul/
+  file: path="/var/consul" state=directory mode=0770 owner=consul group=consul
+  become: yes
+
+- name: create /var/consul/data
+  file: path="{{ consul_data_dir }}" state=directory mode=0770 owner=consul group=consul
+  become: yes
+
+- name: create /var/consul/data
+  file: path="{{ consul_data_dir }}" state=directory mode=0770 owner=consul group=consul
+  become: yes
+
+- name: create /var/consul/data/pki
+  file: path="{{ consul_data_dir }}/pki" state=directory mode=0770 owner=consul group=consul
+  become: yes
+
+- name: create /var/consul/data/pki/private
+  file: path="{{ consul_data_dir }}/pki/private" state=directory mode=0770 owner=consul group=consul
+  become: yes
+
+- name: create /var/consul/data/pki/certs
+  file: path="{{ consul_data_dir }}/pki/certs" state=directory mode=0770 owner=consul group=consul
+  become: yes
+
+- name: copy server.key
+  copy: src="/tmp/consul/ssl/{{ inventory_hostname }}.consul.key" dest="{{ consul_data_dir }}/pki/private/server.key" owner=consul group=consul
+  become: yes
+
+- name: copy server.crt
+  copy: src="/tmp/consul/ssl/{{ inventory_hostname }}.consul.cer" dest="{{ consul_data_dir }}/pki/certs/server.crt" owner=consul group=consul
+  become: yes
+
+- name: copy ca.crt
+  copy: src=/tmp/consul/ca/consul-root.cer dest="{{ consul_data_dir }}/pki/certs/ca.crt" owner=consul group=consul
+  become: yes

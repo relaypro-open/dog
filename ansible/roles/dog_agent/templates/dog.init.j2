@@ -1,0 +1,79 @@
+#!/bin/bash
+#
+# chkconfig: 2345 98 55
+# description: Dog Agent
+# processname: dog
+# pidfile: /var/run/dog/dog.pid
+APP=dog
+CP=/opt/dog
+TIMEOUT=10
+
+export HOME=/opt/dog
+export SHELL=/bin/bash
+export BINDIR=/opt/dog/erts-10.0/bin
+export USER=dog
+export HOSTKEY=$(sha1sum /var/consul/data/pki/certs/server.crt | cut -d' ' -f1)
+cat /etc/dog/config.json | tr -d "\n" | tr "," "\n" | sed 's/"hostkey.*/"hostkey":"'${HOSTKEY}'"/g' | tr "\n" "," > /etc/dog/config.json.1
+mv /etc/dog/config.json.1 /etc/dog/config.json
+
+. /etc/rc.d/init.d/functions
+
+error() {
+    echo -n "$1"
+    echo_failure
+    echo
+    exit 1
+}
+
+# Note: pid file is kept in /var/run because older versions of
+# redhat's implementation of "killproc" don't accept a pidfile
+# argument.
+
+PIDFILE='/var/run/dog/dog.pid'
+LOGFILE='/var/log/dog/console.log'
+
+start()
+{
+
+    echo -n "Starting the Dog Agent...  "
+    /opt/dog/erts-{{ lookup('env','erts_version') }}/bin/erlexec -boot /opt/dog/releases/{{ lookup('env','dog_env') }}-{{ lookup('env','UPSTREAM_BUILD_ID') }}/start -mode embedded -config /opt/dog/releases/{{ lookup('env','dog_env') }}-{{ lookup('env','UPSTREAM_BUILD_ID') }}/sys.config -noinput -start_epmd false -detach
+}
+
+stop()
+{
+    echo -n "Stopping the Dog Agent...  "
+    if [[ -f "$PIDFILE" ]]; then
+	    kill -2 $(cat $PIDFILE)
+	    timeout $TIMEOUT tail --pid=$(cat $PIDFILE) -f /dev/null
+            rm -f ${PIDFILE}
+	    echo
+    else
+	echo -n "No PID file at ${PIDFILE}"
+    fi
+    [ -d '/var/lock/subsys' ] && rm -f /var/lock/subsys/$APP
+}
+
+cd $CP
+
+case "$1" in
+    start)
+        shift 1
+        start "$@"
+        ;;
+    stop)
+        stop
+        ;;
+    status)
+        status $APP
+        exit $?
+        ;;
+    restart)
+        stop
+        start
+        ;;
+    *)
+        echo "Usage: /etc/init.d/dog {start|stop|restart|status}"
+        exit 1
+esac
+
+exit 0

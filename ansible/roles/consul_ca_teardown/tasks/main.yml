@@ -1,0 +1,36 @@
+---
+
+- name: detach from disk image
+  command: hdiutil detach /tmp/consul/ca/
+  connection: local
+  delegate_to: 127.0.0.1
+  when: ansible_os_family == "Darwin"
+
+- name: delete ramdisk
+  become: yes
+  mount:
+    path: /tmp/consul
+    src: none
+    fstype: ramfs
+    opts: size=10m
+    state: absent
+  connection: local
+  delegate_to: 127.0.0.1
+  when: ansible_os_family == "Debian"
+
+- name: remove /tmp/ca.dmg
+  file: path=/tmp/ca.dmg state=absent
+  connection: local
+  delegate_to: 127.0.0.1
+  when: ansible_os_family == "Darwin"
+
+- name: remove /tmp/ca
+  file: path=/tmp/ca state=absent
+  connection: local
+  delegate_to: 127.0.0.1
+  when: ansible_os_family == "Darwin"
+
+- name: remove /tmp/consul
+  file: path=/tmp/consul state=absent
+  connection: local
+  delegate_to: 127.0.0.1

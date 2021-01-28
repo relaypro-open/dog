@@ -1,0 +1,17 @@
+---
+- name: get rabbitmq rpm
+  get_url:
+    dest: "/tmp/rabbitmq-server-{{ rabbitmq_version }}.noarch.rpm"
+    url: "https://www.rabbitmq.com/releases/rabbitmq-server/\
+    {{ rabbitmq_version_prefix }}/rabbitmq-server-{{ rabbitmq_version }}.noarch.rpm"
+  when: ansible_os_family == 'RedHat'
+    
+- name: add rabbitmq key
+  rpm_key:
+    key: 'https://www.rabbitmq.com/rabbitmq-signing-key-public.asc'
+    state: present
+  when: ansible_os_family == 'RedHat'
+
+- name: install rabbitmq
+  yum: name="/tmp/rabbitmq-server-{{ rabbitmq_version }}.noarch.rpm" state=present
+  when: ansible_os_family == 'RedHat'

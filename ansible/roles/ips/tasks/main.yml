@@ -1,0 +1,44 @@
+---
+- name: Gather ec2 facts
+  ec2_instance_facts:
+    region: "{{ region }}"
+    aws_access_key: "{{ AWS_ACCESS_KEY }}"
+    aws_secret_key: "{{ AWS_SECRET_ACCESS_KEY }}"
+  become: no
+  when: provider == "ec2"
+
+- name: Gather ec2 metadata
+  ec2_metadata_facts:
+  when: provider == "ec2"
+
+- debug: var=ansible_ec2_public_ipv4
+
+- name: get ec2 public_ip
+  set_fact:
+    public_ip: "{{ ansible_ec2_public_ipv4 | default(omit) }}"
+  when: ansible_ec2_user_data is defined
+
+- name: get ec2 private_ip
+  set_fact:
+    private_ip: "{{ ansible_ec2_local_ipv4 | default(omit) }}"
+  when: ansible_ec2_user_data is defined
+
+- name: get default public_ip
+  set_fact:
+    public_ip: "{{ ansible_default_ipv4.address  }}"
+  when: ansible_ec2_public_ipv4 is not defined
+
+- name: get eth0 private_ip
+  set_fact:
+    private_ip: "{{ ansible_eth0.ipv4.address }}"
+  when: ansible_ec2_private_ipv4 is not defined and ansible_eth0 is defined and ansible_bond0 is not defined
+
+- name: get bond0 private_ip
+  set_fact:
+    private_ip: "{{ ansible_bond0.ipv4.address }}"
+  when: ansible_ec2_private_ipv4 is not defined and ansible_bond0 is defined
+
+- name: get ens3 private_ip
+  set_fact:
+    private_ip: "{{ ansible_ens3.ipv4.address }}"
+  when: ansible_ec2_private_ipv4 is not defined and ansible_ens3 is defined

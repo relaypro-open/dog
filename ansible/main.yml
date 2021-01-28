@@ -1,0 +1,25 @@
+---
+- hosts: "containers"
+  become: yes
+  gather_facts: yes
+
+  tasks:
+    - include_tasks: users.yml
+
+- hosts: localhost
+  connection: local
+  roles:
+    - { role: consul_ca_create }
+
+- hosts: "containers"
+  become: yes
+  gather_facts: yes
+
+  roles:
+    - { role: consul_tls_cert }
+
+- name: rabbitmq playbook
+  import_playbook: rabbitmq.yml
+
+- name: rethink playbook
+  import_playbook: rethinkdb.yml
