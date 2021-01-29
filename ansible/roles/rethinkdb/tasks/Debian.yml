@@ -10,7 +10,8 @@
   #shell: wget -qO- https://download.rethinkdb.com/apt/pubkey.gpg | apt-key add -
 
 - name: install rethinkdb
-  apt: name=rethinkdb='{{ rethinkdb_apt_version }}' state=present update_cache=yes
+  apt: name=rethinkdb='{{ rethinkdb_apt_version }}{{ ansible_distribution_release }}' state=present update_cache=yes
+  #apt: name=rethinkdb state=present update_cache=yes
 
 - name: install python3-pip
   apt: name=python3-pip state=present 

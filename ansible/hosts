@@ -15,7 +15,7 @@ dog-agent2
 [server]
 dog-server
 [server:vars]
-rethinkdb_apt_version=2.3.6~0xenial
+rethinkdb_apt_version=2.3.7~0
 rethinkdb_config_template=files/rethinkdb/rethink.conf.j2
 rethinkdb_data_dir=/var/db/rethinkdb/dog_trainer
-rabbitmq_apt_version=3.7.28-1
+#rabbitmq_apt_version=3.7.28-1

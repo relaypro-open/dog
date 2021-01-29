@@ -6,14 +6,14 @@ apt-get update -y
 snap install lxd --channel=4.0/stable
 lxd init --auto --storage-backend=btrfs --storage-create-loop=60 -v --network-address=127.0.0.1 --network-port=8443
 adduser vagrant lxd
-lxc launch ubuntu:16.04 dog-agent1 #duplicated on purpose, workaround for libvirt/kvm/vagrant/image? bug
-lxc launch ubuntu:16.04 dog-agent1 #duplicated on purpose, workaround for libvirt/kvm/vagrant/image? bug
+lxc launch ubuntu:18.04 dog-agent1 #duplicated on purpose, workaround for libvirt/kvm/vagrant/image? bug
+lxc launch ubuntu:18.04 dog-agent1 #duplicated on purpose, workaround for libvirt/kvm/vagrant/image? bug
 lxc config set dog-agent1 raw.idmap 'both 1000 1000'
 lxc config device add dog-agent1 sitedir disk source=/home/vagrant path=/opt/home
-lxc launch ubuntu:16.04 dog-agent2
+lxc launch ubuntu:18.04 dog-agent2
 lxc config set dog-agent2 raw.idmap 'both 1000 1000'
 lxc config device add dog-agent2 sitedir disk source=/home/vagrant path=/opt/home
-lxc launch ubuntu:16.04 dog-server
+lxc launch ubuntu:18.04 dog-server
 lxc config set dog-server raw.idmap 'both 1000 1000'
 lxc config device add dog-server sitedir disk source=/home/vagrant path=/opt/home
 lxc config device add dog-server dog-gui proxy listen=tcp:0.0.0.0:3000 connect=tcp:127.0.0.1:3000
@@ -22,7 +22,7 @@ lxc config device add dog-server rabbitmq-gui proxy listen=tcp:0.0.0.0:15672 con
 lxc restart dog-server
 lxc restart dog-agent1
 lxc restart dog-agent2
-#apt-get install -y python3-pip
+apt-get install -y python3-pip
 apt-get install -y ansible=2.9.6+dfsg-1
 ansible-galaxy collection install community.general
 #/ansible directory shared via vangrant sync folder
@@ -42,10 +42,9 @@ Vagrant.configure('2') do |config|
   config.vm.define 'dog-vm-host' do |hostvm|
     # Every Vagrant development environment requires a box. You can search for
     # boxes at https://vagrantcloud.com/search.
-    # config.vm.box = 'generic/ubuntu2004'
-    # config.vm.box = 'ubuntu/xenial64'
-    # config.vm.box = "peru/ubuntu-20.04-desktop-amd64"
-    config.vm.box = "ubuntu/focal64"
+    # config.vm.box = 'ubuntu/xenial64' #16.04
+    # config.vm.box = 'ubuntu/bionic64' #18.04
+    config.vm.box = "ubuntu/focal64" #20.04
 
     # Create a forwarded port mapping which allows access to a specific port
     # within the machine from a port on the host machine and only allow access
