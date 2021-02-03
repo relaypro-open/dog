@@ -18,7 +18,9 @@ sudo apt-get install -y ./vagrant_2.2.14_x86_64.deb
 #vagrant plugin install vagrant-mutate
 #sudo chown root:kvm /dev/kvm
 
-# virtualbox:
+vagrant plugin install vagrant-proxyconf
+
+# virtualbox
 vagrant plugin install vagrant-vbguest
 
 vagrant up

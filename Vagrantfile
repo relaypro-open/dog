@@ -2,18 +2,28 @@
 # vi: set ft=ruby :
 
 $script = <<-'SCRIPT'
+echo 'export HTTP_PROXY="192.168.145.1:3128"' >> /home/vagrant/.bashrc
+echo 'export HTTPS_PROXY="192.168.145.1:3128"' >> /home/vagrant/.bashrc
+echo 'export FTP_PROXY="192.168.145.1:3128"' >> /home/vagrant/.bashrc
+echo 'export NO_PROXY="localhost,127.0.0.1,::1"' >> /home/vagrant/.bashrc
+
 apt-get update -y
 snap install lxd --channel=4.0/stable
 lxd init --auto --storage-backend=btrfs --storage-create-loop=60 -v --network-address=127.0.0.1 --network-port=8443
 adduser vagrant lxd
-lxc launch ubuntu:18.04 dog-agent1 #duplicated on purpose, workaround for libvirt/kvm/vagrant/image? bug
-lxc launch ubuntu:18.04 dog-agent1 #duplicated on purpose, workaround for libvirt/kvm/vagrant/image? bug
+
+lxc config set core.proxy_http http://192.168.145.1:3128
+lxc config set core.proxy_https http://192.168.145.1:3128
+lxc config set core.proxy_ignore_hosts localhost
+
+lxc launch ubuntu:20.04 dog-agent1 #duplicated on purpose, workaround for libvirt/kvm/vagrant/image? bug
+lxc launch ubuntu:20.04 dog-agent1 #duplicated on purpose, workaround for libvirt/kvm/vagrant/image? bug
 lxc config set dog-agent1 raw.idmap 'both 1000 1000'
 lxc config device add dog-agent1 sitedir disk source=/home/vagrant path=/opt/home
-lxc launch ubuntu:18.04 dog-agent2
+lxc launch ubuntu:20.04 dog-agent2
 lxc config set dog-agent2 raw.idmap 'both 1000 1000'
 lxc config device add dog-agent2 sitedir disk source=/home/vagrant path=/opt/home
-lxc launch ubuntu:18.04 dog-server
+lxc launch ubuntu:20.04 dog-server
 lxc config set dog-server raw.idmap 'both 1000 1000'
 lxc config device add dog-server sitedir disk source=/home/vagrant path=/opt/home
 lxc config device add dog-server dog-gui proxy listen=tcp:0.0.0.0:3000 connect=tcp:127.0.0.1:3000
@@ -22,7 +32,8 @@ lxc config device add dog-server rabbitmq-gui proxy listen=tcp:0.0.0.0:15672 con
 lxc restart dog-server
 lxc restart dog-agent1
 lxc restart dog-agent2
-apt-get install -y python3-pip
+apt-get install -y python=3.8.2-0ubuntu2
+apt-get install -y python3-pip=20.0.2-5ubuntu1.1
 apt-get install -y ansible=2.9.6+dfsg-1
 ansible-galaxy collection install community.general
 #/ansible directory shared via vangrant sync folder
@@ -36,14 +47,18 @@ SCRIPT
 # backwards compatibility). Please don't change it unless you know what
 # you're doing.
 Vagrant.configure('2') do |config|
+  if Vagrant.has_plugin?("vagrant-proxyconf")
+    config.proxy.http     = "http://192.168.145.1:3128/"
+    config.proxy.https    = "http://192.168.145.1:3128/"
+    config.proxy.no_proxy = "localhost,127.0.0.1"
+  end
   # The most common configuration options are documented and commented below.
   # For a complete reference, please see the online documentation at
   # https://docs.vagrantup.com.
   config.vm.define 'dog-vm-host' do |hostvm|
     # Every Vagrant development environment requires a box. You can search for
     # boxes at https://vagrantcloud.com/search.
-    # config.vm.box = 'ubuntu/xenial64' #16.04
-    # config.vm.box = 'ubuntu/bionic64' #18.04
+    # VM OS must match containers' OS because VM is used to build erlang application releases.
     config.vm.box = "ubuntu/focal64" #20.04
 
     # Create a forwarded port mapping which allows access to a specific port
