@@ -1,0 +1,13 @@
+---
+#dependencies
+  - name: install iptables,iptables-persistent,ipset
+    apt: 
+      name:
+        - iptables
+        - iptables-persistent
+        - ipset
+      state: present
+      update_cache: yes
+
+  - name: copy systemd dog.service
+    copy: src=files/dog.service dest=/lib/systemd/system/dog.service

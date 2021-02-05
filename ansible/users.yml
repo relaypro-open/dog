@@ -21,6 +21,7 @@
     group: dog
     groups: 
       - consul
+    shell: /bin/bash
 - name: add to sudo.d to account if applicable
   lineinfile: 
     dest: /etc/sudoers.d/dog 

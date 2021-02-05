@@ -1,0 +1,9 @@
+#!/bin/bash
+export BINDIR=/opt/dog/erts-{{ erts_version }}/bin
+export HOME=/opt/dog
+export HOSTKEY=$(sha1sum /var/consul/data/pki/certs/server.crt | cut -d' ' -f1)
+cat /etc/dog/config.json | tr -d "\n" | tr "," "\n" | sed 's/"hostkey.*/"hostkey":"'${HOSTKEY}'"/g' | tr "\n" "," > /etc/dog/config.json.1
+mv /etc/dog/config.json.1 /etc/dog/config.json
+
+#/opt/dog/erts-{{ lookup('env','erts_version') }}/bin/erlexec -boot /opt/dog/releases/{{ lookup('env','dog_env') }}-{{ lookup('env','git_hash') }}/start -mode embedded -config /opt/dog/releases/{{ lookup('env','dog_env') }}-{{ lookup('env','git_hash') }}/sys.config -noinput -start_epmd false 
+/opt/dog/erts-{{ erts_version }}/bin/erlexec -boot /opt/dog/releases/{{ git_hash }}/start -mode embedded -config /opt/dog/releases/{{ git_hash }}/sys.config -noinput -start_epmd false 

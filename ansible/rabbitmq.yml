@@ -3,64 +3,37 @@
 - hosts: "server"
   become: yes
 
-  pre_tasks:
+  roles: 
+    - rabbitmq_repo
+
+  tasks:
   - name: add rabbitmq user to consul group
     user:
       name: rabbitmq
       groups: consul
       append: yes
 
-  - name: install curl
-    apt:
-      name: curl
-      state: present
-
-  - name: install gnupg
-    apt:
-      name: gnupg 
-      state: present
-
-  - name: install repo key
-    shell: curl -fsSL https://github.com/rabbitmq/signing-keys/releases/download/2.0/rabbitmq-release-signing-key.asc | apt-key add -
-
-  - name: install apt-transport-https
-    apt:
-      name: apt-transport-https
-      state: present
-
-  - name: rabbitmq repo
-    copy:
-      src: rabbitmq/bintray.rabbitmq.list
-      dest: /etc/apt/sources.list.d/bintray.rabbitmq.list
-
-  - name: apt update
-    shell: apt-get update -y
-
   - name: rabbitmq-server install
     apt:
       name: rabbitmq-server
       state: present
 
-  roles: 
-
-  tasks:
-
   - name: copy rabbitmq.conf 
     copy: src=files/rabbitmq/rabbitmq.conf  dest=/etc/rabbitmq/rabbitmq.conf owner=root group=rabbitmq
     when: ansible_os_family == "Debian" and env == "box"
-    notify:
-      - reload systemd
-      - restart rabbitmq
   
   - name: copy rabbitmq enable_plugins
     copy: src=files/rabbitmq/enabled_plugins dest=/etc/rabbitmq/enabled_plugins owner=root group=rabbitmq
     when: ansible_os_family == "Debian" and env == "box"
-    notify:
-      - reload systemd
-      - restart rabbitmq
 
-  - name: start rabbitmq
-    service: name=rabbitmq-server state=started enabled=true
+  - name: setup rabbitmq-server service
+    service: name=rabbitmq-server enabled=yes state=started   
+
+  - name: wait for rabbitmq to start
+    wait_for: port=15672 delay=10
+      
+  - name: remove default guest user
+    rabbitmq_user: user=guest state=absent
 
   - name: create rabbitmq dog vhost
     rabbitmq_vhost:

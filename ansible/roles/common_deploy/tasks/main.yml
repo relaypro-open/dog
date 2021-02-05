@@ -1,0 +1,107 @@
+---
+  #- debug: var=s3_app
+  #- debug: var=app
+  #- debug: var=cluster
+  #- debug: var=cluster_separator
+  #- debug: var=env
+  #- debug: var=extension
+
+#parse string if variable set with -e on command line
+
+  #- debug:
+  #    var: delegate_deploy
+
+# Selecting latest archive from s3:
+- name: list latest s3 archive
+  latest_s3_archive: app="{{ s3_app | default(app) }}" archive_prefix="{{ s3_env | default(cluster_env) }}" aws_access_key="{{AWS_ACCESS_KEY_ID}}" aws_secret_key="{{AWS_SECRET_ACCESS_KEY}}" env_specific_builds="{{ env_specific_builds }}" extension="{{ extension }}" release_path="{{ release_path|default('') }}"
+  delegate_to: 127.0.0.1
+  connection: local
+  register: s3_archive
+  become: no
+  when: local_deploy != true
+
+- debug:
+    var: s3_archive
+
+  #- debug:
+  #    msg: "Looking for s3 key {{ s3_archive.presigned_url }}"
+
+  #- debug:
+  #    msg: "s3_archive.build_id: {{ s3_archive.build_id }}"
+  #
+  #- debug:
+  #    msg: "Presigned s3 url {{ s3_archive.presigned_url }}"
+
+- name: target host gets archive from s3
+  become: true
+  #command: "curl -s -o {{ deploy_dir }}/{{ s3_archive.build_id }} '{{ s3_archive.presigned_url }}'"
+  get_url:
+    url: '{{ s3_archive.presigned_url }}'
+    dest: "{{ deploy_dir }}/{{ s3_archive.build_id }}"
+    mode: 0400
+    owner: root
+    group: root
+
+- name: create directory to install to
+  become: true
+  file:
+    path: "{{ app_versioned_install_dir }}"
+    state: directory
+    mode: 0755
+    owner: "{{ app_owner }}"
+    group: "{{ app_owner }}"
+
+- name: create /var/log, /var/run and /var/db
+  become: true
+  file:
+    dest: "/var/{{ item }}/{{ app }}"
+    state: directory
+    owner: "{{ app_owner }}"
+    group: "{{ app_owner }}"
+    mode: 0755
+  with_items:
+    - log
+    - run
+    - db
+    
+- name: extract archive to install directory
+  become: true
+  unarchive:
+    src: "{{ deploy_dir }}/{{ s3_archive.build_id }}"
+    dest: "{{ app_versioned_install_dir }}"
+    copy: no
+    creates: "{{ app_versioned_install_dir }}/{{ app }}.sh"
+    owner: "{{ app_owner }}"
+    group: "{{ app_owner }}"
+
+- name: delete archive
+  become: true
+  file:
+    dest: "{{ deploy_dir }}/{{ s3_archive.build_id }}"
+    state: absent
+
+# tar file is friendly if it contains a single subdirectory. If that's the
+# case, then we move all of the contents of that subdir into the install dir,
+# thus making all paths shallower. Otherwise we do nothing
+- script: ../scripts/unarchive-ensure-shallow-paths.sh "{{ deploy_dir }}" \
+            "{{ s3_archive.build_id }}" "{{ app_versioned_install_dir }}"
+
+- name: link to new install directory
+  become: true
+  file:
+    dest: "/opt/{{ app }}"
+    src: "{{ app_versioned_install_dir }}"
+    owner: "{{ app_owner }}"
+    group: "{{ app_owner }}"
+    mode: 0755
+    state: link
+    force: yes
+
+- name: ensure install directory has proper ownership
+  become: true
+  file:
+    path: "{{ app_versioned_install_dir }}"
+    state: directory
+    recurse: yes
+    owner: "{{ app_owner }}"
+    group: "{{ app_owner }}"

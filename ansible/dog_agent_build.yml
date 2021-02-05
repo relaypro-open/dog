@@ -1,0 +1,18 @@
+---
+- hosts: localhost
+  vars:
+    asdf_version: v0.8.0
+    asdf_user: vagrant
+  roles:
+  - role: ansible-role-asdf
+    asdf_plugins:
+    - name: "erlang"
+      versions: ["22.3.2"]
+      global: "22.3.2"
+    - name: "elixir"
+      versions: ["1.9.4"]
+      global: "1.9.4"
+
+- hosts: localhost
+  roles:
+    - { role: dog_agent_build, when: env == 'box' }

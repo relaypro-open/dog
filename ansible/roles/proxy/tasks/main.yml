@@ -1,0 +1,25 @@
+---
+
+- name: export HTTP_PROXY=
+  ansible.builtin.lineinfile:
+    path: /etc/environment
+    regexp: '^export HTTP_PROXY='
+    line: export HTTP_PROXY="192.168.145.1:3128"
+
+- name: export HTTPS_PROXY=
+  ansible.builtin.lineinfile:
+    path: /etc/environment
+    regexp: '^export HTTPS_PROXY='
+    line: export HTTPS_PROXY="192.168.145.1:3128"
+
+- name: export FTP_PROXY=
+  ansible.builtin.lineinfile:
+    path: /etc/environment
+    regexp: '^export FTP_PROXY="'
+    line: export FTP_PROXY="192.168.145.1:3128"
+
+- name: export NO_PROXY=
+  ansible.builtin.lineinfile:
+    path: /etc/environment
+    regexp: '^export NO_PROXY="'
+    line: export NO_PROXY="localhost,127.0.0.1,::1"

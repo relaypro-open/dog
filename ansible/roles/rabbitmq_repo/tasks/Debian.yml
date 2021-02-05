@@ -1,0 +1,27 @@
+---
+- name: install curl
+  apt:
+    name: curl
+    state: present
+
+- name: install gnupg
+  apt:
+    name: gnupg 
+    state: present
+
+- name: install repo key
+  shell: curl -fsSL https://github.com/rabbitmq/signing-keys/releases/download/2.0/rabbitmq-release-signing-key.asc | apt-key add -
+
+- name: install apt-transport-https
+  apt:
+    name: apt-transport-https
+    state: present
+
+- name: rabbitmq repo
+  copy:
+    src: rabbitmq/bintray.rabbitmq.list
+    dest: /etc/apt/sources.list.d/bintray.rabbitmq.list
+
+- name: apt update
+  shell: apt-get update -y
+

@@ -1,21 +1,28 @@
 [all:vars]
 env=box
+dog_env=box
 provider=lxd
 ansible_connection=lxd
 erlang_package_version=1:22.3.4.9-1
+dog_trainer_repo=/ansible/repos/dog_trainer
+dog_agent_repo=/ansible/repos/dog_agent
+BUILD_ID=local
+dog_trainer_version=HEAD
+dog_agent_version=HEAD
 
 [containers:children]
 agents
 server
 
 [agents]
-dog-agent1
-dog-agent2
+dog-agent1 dog_tag=app
+dog-agent2 dog_tag=db
+[agents:vars]
 
 [server]
 dog-server
 [server:vars]
-rethinkdb_apt_version=2.3.7~0
+rethinkdb_apt_version=2.4.1~0
 rethinkdb_config_template=files/rethinkdb/rethink.conf.j2
 rethinkdb_data_dir=/var/db/rethinkdb/dog_trainer
 #rabbitmq_apt_version=3.7.28-1

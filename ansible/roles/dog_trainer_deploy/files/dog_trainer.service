@@ -1,0 +1,18 @@
+[Unit]
+Description=dog_trainer
+
+[Service]
+User=dog
+Group=dog
+Type=forking
+TimeoutStartSec=0
+Environment=HOME=/opt/dog_trainer
+ExecStart=/opt/dog_trainer/bin/dog_trainer start
+ExecStop=/opt/dog_trainer/bin/dog_trainer stop
+WorkingDirectory=/opt/dog_trainer
+Restart=on-failure
+RuntimeDirectory=dog_trainer
+PIDFile=/var/run/dog_trainer/dog_trainer.pid
+
+[Install]
+WantedBy=multi-user.target

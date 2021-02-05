@@ -1,4 +1,7 @@
 ---
+- name: system proxy setup
+  import_playbook: proxy.yml
+
 - hosts: "containers"
   become: yes
   gather_facts: yes
@@ -23,3 +26,9 @@
 
 - name: rethink playbook
   import_playbook: rethinkdb.yml
+
+- name: dog_trainer_build
+  import_playbook: dog_trainer_build.yml
+
+- name: dog_trainer_deploy
+  import_playbook: dog_trainer_deploy.yml

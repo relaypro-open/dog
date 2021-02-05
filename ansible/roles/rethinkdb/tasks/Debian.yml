@@ -2,7 +2,8 @@
 - debug: var=rethinkdb_data_dir
 
 - name: install rethinkdb repo
-  shell: . /etc/lsb-release && echo "deb https://download.rethinkdb.com/repository/ubuntu-$DISTRIB_CODENAME $DISTRIB_CODENAME main" | sudo tee /etc/apt/sources.list.d/rethinkdb.list
+  become: yes
+  shell: . /etc/lsb-release && echo "deb https://download.rethinkdb.com/repository/ubuntu-$DISTRIB_CODENAME $DISTRIB_CODENAME main" > /etc/apt/sources.list.d/rethinkdb.list
   #shell: . /etc/lsb-release && echo "deb http://download.rethinkdb.com/apt $DISTRIB_CODENAME main" | tee /etc/apt/sources.list.d/rethinkdb.list
 
 - name: install repo key
