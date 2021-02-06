@@ -1,5 +1,0 @@
----
-- name: run make file
-  command: make install
-  args:
-    chdir: /opt/{{ app }}

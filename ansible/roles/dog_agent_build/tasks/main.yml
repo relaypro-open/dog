@@ -32,7 +32,6 @@
 - name: checkout dog_agent repo
   ignore_errors: yes
   git:
-    name: dog_agent
     repo: git@github.com:Phonebooth/dog_agent.git
     dest: "{{ dog_agent_repo }}"
     version: "{{ dog_agent_version }}"

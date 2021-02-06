@@ -7,6 +7,9 @@ echo 'export HTTPS_PROXY="192.168.145.1:3128"' >> /home/vagrant/.bashrc
 echo 'export FTP_PROXY="192.168.145.1:3128"' >> /home/vagrant/.bashrc
 echo 'export NO_PROXY="localhost,127.0.0.1,::1"' >> /home/vagrant/.bashrc
 
+echo 'Acquire::http::Proxy "http://192.168.145.1:3128";' > /etc/apt/apt.conf
+echo 'Acquire::https::Proxy "http://192.168.145.1:3128";' >> /etc/apt/apt.conf
+
 apt-get update -y
 snap install lxd --channel=4.0/stable
 lxd init --auto --storage-backend=btrfs --storage-create-loop=60 -v --network-address=127.0.0.1 --network-port=8443
@@ -75,7 +78,7 @@ Vagrant.configure('2') do |config|
       v.name = 'dog-vm-host'
       v.check_guest_additions = true
       v.gui = false
-      v.memory = 2048
+      v.memory = 3072
       v.cpus = 2
     end
 

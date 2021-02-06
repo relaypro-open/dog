@@ -1,0 +1,22 @@
+---
+- name: create flan directory
+  file:
+    path: /opt/flan/flan_api
+    state: directory
+    owner: nginx
+    group: nginx
+
+- name: copy mock flan config
+  copy:
+    dest: /opt/flan/flan_api/flan_ips
+    src: flan_ips
+    owner: nginx
+    group: nginx
+
+- name: extract archive
+  ansible.builtin.unarchive:
+    src: "{{ dog_park_repo }}/build/dog_park.tgz"
+    dest: /opt/dog_park
+    owner: nginx
+    group: nginx
+

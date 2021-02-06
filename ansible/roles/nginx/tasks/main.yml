@@ -1,0 +1,27 @@
+---
+
+- name: nginx package
+  apt: pkg=nginx state=present
+
+- name: copy dog default nginx site config
+  template: src=nginx_default.j2 dest=/etc/nginx/conf.d/default.conf owner=nginx group=nginx
+  notify:
+    - reload nginx
+
+- name: remove nginx init.d script
+  file: path=/etc/init.d/nginx state=absent
+  when: ansible_os_family == "Debian"
+
+- name: copy systemd nginx.service file
+  copy: src=nginx.service  dest=/lib/systemd/system/nginx.service owner=root group=root
+  when: ansible_os_family == "Debian"
+
+- name: reload systemd
+  ansible.builtin.systemd:
+    daemon_reload: yes
+
+- name: setup nginx service
+  service:
+    name: nginx
+    state: restarted
+    enabled: yes
