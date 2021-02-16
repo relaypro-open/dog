@@ -1,0 +1,8 @@
+.vagrant
+_site
+*.deb
+ansible/ansible.log
+disabled
+ansible/repos
+ansible/lxd
+ansible/ca_passphrase.txt
