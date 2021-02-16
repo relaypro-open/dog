@@ -13,6 +13,13 @@
     owner: nginx
     group: nginx
 
+- name: create dog_park deploy dir
+  file:
+    path: /opt/dog_park
+    owner: nginx
+    group: nginx
+    state: directory
+
 - name: extract archive
   ansible.builtin.unarchive:
     src: "{{ dog_park_repo }}/build/dog_park.tgz"

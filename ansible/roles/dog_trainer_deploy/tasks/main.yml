@@ -76,21 +76,33 @@
   file:
     path: "/opt/dog_trainer.{{ git_hash }}"
     state: directory
+    owner: dog
+    group: dog
   when: env == "box"
 
 - name: target host gets archive from local directory
   become: true
   unarchive:
-    src: "/ansible/repos/dog_trainer/_build/box/rel/dog_trainer/dog_trainer-local.tar.gz"
+    src: "{{ dog_trainer_repo }}/_build/box/rel/dog_trainer/dog_trainer-local.tar.gz"
     dest: "/opt/dog_trainer.{{ git_hash }}/"
     owner: dog
     group: dog
+  when: env == "box"
+
+- name: dog_trainer chown
+  file:
+    path: "/opt/dog_trainer.{{ git_hash }}"
+    owner: dog
+    group: dog
+    recurse: yes
   when: env == "box"
 
 - name: dog_trainer link
   file:
     src: "/opt/dog_trainer.{{ git_hash }}"
     dest: /opt/dog_trainer
+    owner: dog
+    group: dog
     state: link
   when: env == "box"
 

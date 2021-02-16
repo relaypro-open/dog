@@ -36,7 +36,4 @@ vagrant ssh
 or
 ssh dog-vm-host"
 
-echo "to setup dog, ssh to dog-vm-host:
-ssh vagrant@dog-vm-host 
-cd /ansbile
-./run_ansible.sh"
+ssh vagrant@dog-vm-host "/ansible/run_ansible.sh"

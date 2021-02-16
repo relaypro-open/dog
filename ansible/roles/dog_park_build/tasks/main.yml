@@ -1,40 +1,61 @@
 ---
+- name: check SSH_AUTH_SOCK
+  shell: echo $SSH_AUTH_SOCK
+  register: ssh_auth_sock
+
+- debug: var=ssh_auth_sock.stdout
+
 - name: create repos dir
+  become: yes
   file:
     path: "{{ dog_park_repo }}"
     state: directory
+    owner: vagrant
+    group: vagrant
 
 - name: install nodesource repo
   become: yes
   shell: curl -sL https://deb.nodesource.com/setup_12.x | bash -
 
 - name: install nodejs
+  become: yes
   apt:
-    name: nodejs=12.20.1-deb-1nodesource1
+    name: nodejs
+    #name: nodejs=12.20.2-deb-1nodesource1
     state: present
-
-- name: install yarn repo key
-  become: yes
-  shell: curl -sS https://dl.yarnpkg.com/debian/pubkey.gpg | apt-key add -
-
-- name: install yarn repo
-  become: yes
-  shell: echo "deb https://dl.yarnpkg.com/debian/ stable main" | tee /etc/apt/sources.list.d/yarn.list
+    update_cache: yes
 
 - name: install yarn
-  shell: sudo apt install --no-install-recommends yarn
+  become: yes
+  shell: npm install --global yarn@1.16.0
+
+- name: add bitbucket.org to known_hosts
+  lineinfile:
+    create: yes
+    path: ~/.ssh/known_hosts
+    regexp:  "^bitbucket.org ssh-rsa"
+    line: bitbucket.org ssh-rsa AAAAB3NzaC1yc2EAAAABIwAAAQEAubiN81eDcafrgMeLzaFPsw2kNvEcqTKl/VqLat/MaB33pZy0y3rJZtnqwR2qOOvbwKZYKiEO1O6VqNEBxKvJJelCq0dTXWT5pbO2gDXC6h6QDXCaHo6pOHGPUy+YBaGQRGuSusMEASYiWunYN0vCAI8QaXnWMXNMdFP3jHAJH0eDsoiGnLPBlBp4TNm6rYI74nMzgz3B9IikW4WVK+dc8KZJZWYjAuORU3jc1c/NPskD2ASinf8v3xnfXeukU0sJ5N6m5E8VLjObPEO+mN2t/FZTMZLiFqPWc/ALSqnMnnhwrNi2rbfg/rd/IpL8Le3pSBne8+seeFVBoGqzHM9yXw==
+
+- name: create repo dir
+  become: yes
+  file:
+    path: "{{ dog_park_repo }}"
+    state: directory
+    owner: vagrant
+    group: vagrant
 
 - name: clone dog_park repo
-  ignore_errors: yes
   git:
     repo: git@bitbucket.org:republicwireless/dog_park.git
     dest: "{{ dog_park_repo }}"
     version: "{{ dog_park_version }}"
+    accept_hostkey: yes
+    force: yes
 
-- name: setup npm/yarn proxy config
-  shell: npm config set proxy http://192.168.145.1:3128; npm config set https-proxy http://192.168.145.1:3128; npm config set strict-ssl false npm config set registry “http://registry.npmjs.org/” npm –without-ssl –insecure install
-  args:  
-    chdir: "{{ dog_park_repo }}"
+    #- name: setup npm/yarn proxy config
+    #  shell: npm config set proxy http://192.168.145.1:3128; npm config set https-proxy http://192.168.145.1:3128; npm config set strict-ssl false npm config set registry “http://registry.npmjs.org/” npm –without-ssl –insecure install
+    #  args:  
+    #    chdir: "{{ dog_park_repo }}"
 
 - name: yarn install
   shell: yarn install

@@ -25,17 +25,22 @@
 #- name: bitbucket key
 #  command: ssh git@bitbucket.org
 - name: create repos dir
+  become: yes
   file:
-    path: "/ansible/repos"
+    path: "{{ dog_trainer_repo }}"
     state: directory
+    owner: vagrant
+    group: vagrant
 
-- name: checkout dog_trainer repo
-  ignore_errors: yes
+- debug: var=dog_trainer_version
+
+- name: clone dog_trainer repo
   git:
-    name: dog_trainer
     repo: git@github.com:Phonebooth/dog_trainer.git
-    dest: /ansible/repos/dog_trainer
+    dest: "{{ dog_trainer_repo }}"
     version: "{{ dog_trainer_version }}"
+    accept_hostkey: yes
+    force: yes
 
 - debug: var=dog_trainer_repo
 
@@ -60,7 +65,7 @@
     mode: 0700
 
 - name: update version escript
-  shell: ". /etc/profile.d/asdf.sh && scripts/update_version.escript config/sys.config.{{ dog_env }} {{ dog_env }}-{{ BUILD_ID }}"
+  command: "scripts/update_version.escript config/sys.config.{{ dog_env }} {{ dog_env }}-{{ BUILD_ID }}"
   args:
     chdir: "{{ dog_trainer_repo }}"
 
@@ -70,19 +75,21 @@
     mode: 0700
 
 - name: mix local.hex --force
-  command: mix local.hex --force
+  command: "mix local.hex --force" #will hang later if not '--force'
 
 - name: mix local.rebar --force
-  command: mix local.rebar --force
+  command: "mix local.rebar --force"
 
 - name: add github.com to known_hosts
   lineinfile:
+    create: yes
     path: ~/.ssh/known_hosts
     regexp:  "^github.com ssh-rsa"
     line: github.com ssh-rsa AAAAB3NzaC1yc2EAAAABIwAAAQEAq2A7hRGmdnm9tUDbO9IDSwBK6TbQa+PXYPCPy6rbTrTtw7PHkccKrpp0yVhp5HdEIcKr6pLlVDBfOLX9QUsyCOV0wzfjIJNlGEYsdlLJizHhbn2mUjvSAHQqZETYP81eFzLQNnPHt4EVVUh7VfDESU84KezmD5QlWpXLmvU31/yMf+Se8xhHTvKSCZIFImWwoG6mbUoWf9nzpIoaSjB+weqqUUmpaaasXVal72J+UX2B+2RPW3RcT0eOzQgqlJL3RKrTJvdsjE3JEAvGq3lGHSZXy28G3skua2SmVi/w4yCE6gbODqnTWlg7+wC604ydGXA8VJiS5ap43JXiUFFAaQ==
 
 - name: add bitbucket.org to known_hosts
   lineinfile:
+    create: yes
     path: ~/.ssh/known_hosts
     regexp:  "^bitbucket.org ssh-rsa"
     line: bitbucket.org ssh-rsa AAAAB3NzaC1yc2EAAAABIwAAAQEAubiN81eDcafrgMeLzaFPsw2kNvEcqTKl/VqLat/MaB33pZy0y3rJZtnqwR2qOOvbwKZYKiEO1O6VqNEBxKvJJelCq0dTXWT5pbO2gDXC6h6QDXCaHo6pOHGPUy+YBaGQRGuSusMEASYiWunYN0vCAI8QaXnWMXNMdFP3jHAJH0eDsoiGnLPBlBp4TNm6rYI74nMzgz3B9IikW4WVK+dc8KZJZWYjAuORU3jc1c/NPskD2ASinf8v3xnfXeukU0sJ5N6m5E8VLjObPEO+mN2t/FZTMZLiFqPWc/ALSqnMnnhwrNi2rbfg/rd/IpL8Le3pSBne8+seeFVBoGqzHM9yXw==

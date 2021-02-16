@@ -6,3 +6,5 @@ disabled
 ansible/repos
 ansible/lxd
 ansible/ca_passphrase.txt
+ansible/vagrant_dot_asdf/
+ansible/vagrant_profile-d_asdf_sh

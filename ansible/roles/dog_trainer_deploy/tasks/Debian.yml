@@ -1,6 +1,7 @@
 ---
 #dependencies
   - name: install iptables,iptables-persistent,ipset
+    become: yes
     apt: 
       name:
         - iptables
