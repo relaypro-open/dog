@@ -1,5 +1,5 @@
 <p align="center">
-  <img src="docs/dog-segmented-green.network-400x400.png">
+  <img src="images/dog-segmented-green.network-400x400.png">
 </p>
 
 1. [What is dog?](#what-is-dog?)
@@ -9,6 +9,7 @@
 5. [Architecture](#architecture)
 6. [Security](#security)
 7. [Logical Elements](#logical-elements)
+8. [Install](#install)
 
 ## What is dog?
 dog is a firewall management system designed to manage hundreds+ of servers.
@@ -44,7 +45,7 @@ Think of it as your guard dog.
 - [dog_park](https://bitbucket.org/republicwireless/dog_park/src/master/) is the browser user interface for dog_trainer.
 
 ## Architecture
-![dog](docs/dog_family_overview_landscape-1.1.jpg)
+![dog](images/dog_family_overview_landscape-1.1.jpg)
 - dog Agents communicate with dog_trainer over RabbitMQ queues.
 - dog_trainer stores it's configuration in a RethinkDB database.
 - dog_park communicates with dog_park via a RESTful API, which can be used for further integrations.
@@ -68,3 +69,9 @@ Think of it as your guard dog.
 - Ipsets are used to make fast, readable iptables rules even with thousands of addresses.
 
 - Links are used to share the addresses of Groups and Zones (as ipsets) between multiple dog_trainers.
+
+## Install
+- [dog_in_a _box](docs/dog__in_a__box.md)
+- [dog_trainer](docs/dog_trainer.md)
+- [dog_park](docs/dog_park.md)
+- [dog_agent](docs/dog_agent.md)
