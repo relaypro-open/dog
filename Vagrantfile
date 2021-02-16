@@ -8,29 +8,13 @@ whoami
 ssh-add .vagrant/machines/dog-vm-host/virtualbox/private_key
 
 echo $PATH
-#echo 'export HTTP_PROXY="http://192.168.145.1:3128"' | tee /etc/profile.d/proxy.sh
-#echo 'export HTTPS_PROXY="http://192.168.145.1:3128"' | tee -a /etc/profile.d/proxy.sh 
-#echo 'export FTP_PROXY="http://192.168.145.1:3128"' | tee -a /etc/profile.d/proxy.sh  
-#echo 'export NO_PROXY="localhost,127.0.0.1,::1"' | tee -a  /etc/profile.d/proxy.sh   
-#echo 'export http_proxy="http://192.168.145.1:3128"' | tee -a /etc/profile.d/proxy.sh   
-#echo 'export https_proxy="http://192.168.145.1:3128"' | tee -a /etc/profile.d/proxy.sh   
-#echo 'export ftp_proxy="http://192.168.145.1:3128" | tee -a /etc/profile.d/proxy.sh  '
-#echo 'export no_proxy="localhost,127.0.0.1,::1"' | tee -a /etc/profile.d/proxy.sh   
-#source /etc/profile.d/proxy.sh
-
-#echo 'Acquire::http::Proxy "http://192.168.145.1:3128";' |  tee /etc/apt/apt.conf
-#echo 'Acquire::https::Proxy "http://192.168.145.1:3128";' |  tee -a /etc/apt/apt.conf
 
 apt-get update -y
 snap install lxd --channel=4.0/stable
 lxd init --auto --storage-backend=btrfs --storage-create-loop=60 -v --network-address=127.0.0.1 --network-port=8443
 adduser vagrant lxd
 
-lxc image import /ansible/lxd/ubuntu-20.04-server-cloudimg-amd64-lxd.tar.xz /ansible/lxd/ubuntu-20.04-server-cloudimg-amd64.squashfs --alias ubuntu-20.04
-
-#lxc config set core.proxy_http http://192.168.145.1:3128
-#lxc config set core.proxy_https http://192.168.145.1:3128
-#lxc config set core.proxy_ignore_hosts localhost
+#lxc image import /ansible/lxd/ubuntu-20.04-server-cloudimg-amd64-lxd.tar.xz /ansible/lxd/ubuntu-20.04-server-cloudimg-amd64.squashfs --alias ubuntu-20.04
 
 lxc launch ubuntu:20.04 dog-agent1 #duplicated on purpose, workaround for libvirt/kvm/vagrant/image? bug
 lxc launch ubuntu:20.04 dog-agent1 #duplicated on purpose, workaround for libvirt/kvm/vagrant/image? bug

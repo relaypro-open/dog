@@ -1,7 +1,4 @@
 ---
-#- name: system proxy setup
-#  import_playbook: proxy.yml
-
 - hosts: "containers"
   become: yes
   gather_facts: yes
@@ -20,14 +17,6 @@
   roles:
     - { role: consul_tls_cert }
 
-      #- hosts: localhost
-      #  tasks:
-      #  - name: stop dog-agent containers to free memory for build
-      #    command: lxc stop {{ item }}
-      #    with_items:
-      #      - dog-agent1
-      #      - dog-agent2
-
 - name: rabbitmq playbook
   import_playbook: rabbitmq.yml
 
@@ -45,14 +34,6 @@
 
 - name: dog_park_deploy
   import_playbook: dog_park_deploy.yml
-
-  #- hosts: localhost
-  #  tasks:
-  #  - name: start dog-agent containers
-  #    command: lxc start {{ item }}
-  #    with_items:
-  #      - dog-agent1
-  #      - dog-agent2
 
 - name: dog_agent_build
   import_playbook: dog_agent_build.yml
