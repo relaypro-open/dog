@@ -1,4 +1,33 @@
 ---
+- name: check if consul certs installed
+  stat:
+    path: /var/consul/data/pki/private/server.key
+  register: key
+
+- debug: var=key.stat.exists
+
+- name: consul_ca_download
+  include_role:
+    name: consul_ca_download
+  when: key.stat.exists == false
+
+- name: consul_tls_cert
+  include_role:
+    name: consul_tls_cert
+  when: key.stat.exists == false
+
+- name: add dog to consul group to access certs
+  user:
+    name: dog
+    groups: consul
+    append: yes
+
+- name: copy consul dog_agent service file
+  copy: src=../files/dog_agent.consul.json dest=/etc/consul.d/dog.json owner=root group=root
+  notify:
+    - reload consul
+  when: env != "box"
+
 - include: Debian.yml
   when: ansible_os_family == "Debian"
 
@@ -6,11 +35,11 @@
   include_role:
     name: common_deploy
   vars:
-    app: dog_park
-    s3_app: dog_park
-    app_owner: dog_park
+    app: dog
+    s3_app: dog
+    app_owner: dog
     env_specific_builds: True
-    jenkins_job: dog_park
+    jenkins_job: dog_agent
     extension: ".tar.gz"
     cluster: ""
     cluster_separator: ""
@@ -18,31 +47,138 @@
   - upgrade
   when: env != "box"
 
-- name: dog_park dir
+- name: git erts version from archive
+  delegate_to: 127.0.0.1
+  connection: local
+  shell: tar -O -xf /ansible/repos/dog_agent/_build/box/rel/dog/dog-local.tar.gz releases/start_erl.data | awk '{print $1}'
+  register: command_output
+  when: env == "box"
+
+- set_fact:
+    erts_version: "{{ command_output.stdout }}"
+  when: env == "box"
+
+- set_fact:
+    git_hash: "{{ command_output.stdout }}"
+  when: env == "box"
+- name: git version from archive
+  delegate_to: 127.0.0.1
+  connection: local
+  shell: tar -O -xf /ansible/repos/dog_agent/_build/box/rel/dog/dog-local.tar.gz releases/start_erl.data | awk '{print $2}'
+  register: command_output
+  when: env == "box"
+
+- set_fact:
+    git_hash: "{{ command_output.stdout }}"
+  when: env == "box"
+
+- debug: var=git_hash
+  when: env == "box"
+
+- name: dog dir
   file:
-    path: "/opt/dog_park.{{ git_hash }/dog_park"
+    path: "/opt/dog.{{ git_hash }}"
     state: directory
   when: env == "box"
 
 - name: target host gets archive from local directory
   become: true
   unarchive:
-    src: "/ansible/repos/dog_park_agent/_build/box/rel/dog_park/dog_park-local.tar.gz"
-    dest: "/opt/dog_park.{{ git_hash }}/"
-    owner: dog_park
-    group: dog_park
+    src: "/ansible/repos/dog_agent/_build/box/rel/dog/dog-local.tar.gz"
+    dest: "/opt/dog.{{ git_hash }}/"
+    owner: dog
+    group: dog
   when: env == "box"
 
-- name: dog_park link
+- name: dog link
   file:
-    src: "/opt/dog_park.{{ git_hash }}"
-    dest: /opt/dog_park
+    src: "/opt/dog.{{ git_hash }}"
+    dest: /opt/dog
     state: link
   when: env == "box"
 
-- name: restart dog_park
+- name: mkdir /opt/dog/priv/certs/rabbitmq/
+  file: dest=/opt/dog/priv/certs/rabbitmq/ owner=dog group=dog state=directory mode=0700
+  tags:
+  - upgrade
+
+- name: mkdir /opt/dog/priv/certs/rabbitmq/ca
+  file: dest=/opt/dog/priv/certs/rabbitmq/ca owner=dog group=dog state=directory mode=0700
+  tags:
+  - upgrade
+
+- name: mkdir /opt/dog/priv/certs/rabbitmq/client
+  file: dest=/opt/dog/priv/certs/rabbitmq/client owner=dog group=dog state=directory mode=0700
+  tags:
+  - upgrade
+
+    #- name: place broker certs from credstash
+    #  template:
+    #      src   : "templates/certs/{{ item.d }}/{{ item.f }}.j2"
+    #      dest  : "/opt/dog/priv/certs/rabbitmq/{{ item.d }}/{{ item.f }}"
+    #      owner : dog
+    #      group : dog
+    #      mode  : 0700
+    #  with_items:
+    #      - {d: 'ca', f: 'cacert.pem'}
+    #      - {d: 'client', f: 'cert.pem'}
+    #      - {d: 'client', f: 'key.pem'}
+    #  tags:
+    #  - upgrade
+
+- name: mkdir /etc/dog
+  file: dest=/etc/dog owner=dog group=dog state=directory mode=0700
+
+- name: mkdir /var/run/dog
+  file: dest=/var/run/dog owner=dog group=dog state=directory mode=0700
+
+- name: mkdir /var/log/dog
+  file: dest=/var/log/dog owner=dog group=dog state=directory mode=0700
+
+- name: chmod /var/db/
+  file: dest=/var/db/ state=directory mode=0777
+
+- name: mkdir /var/db/dog
+  file: dest=/var/db/dog owner=dog group=dog state=directory mode=0700
+
+- name: mkdir /tmp/erl_pipes
+  file: dest=/tmp/erl_pipes/ owner=root group=root state=directory mode=0777
+
+- name: mkdir /tmp/erl_pipes/dog
+  file: dest=/tmp/erl_pipes/dog owner=dog group=dog state=directory mode=0700
+
+  #- name: local config template
+  #  template: src="{{ dog_agent_repo }}/config/templates/local.sys.config.j2" dest="{{ dog_agent_repo }}/config/local.sys.config"
+  #- name: qa config template
+  #  template: src="{{ dog_agent_repo }}/config/templates/qa.sys.config.j2" dest="{{ dog_agent_repo }}/config/qa.sys.config"
+  #- name: pro config template
+  #  template: src="{{ dog_agent_repo }}/config/templates/pro.sys.config.j2" dest="{{ dog_agent_repo }}/config/pro.sys.config"
+- debug: var=erts_version
+
+- name: dog_start.sh template
+  template: 
+  #src: "{{ dog_agent_repo }}/config/dog_start.sh.j2" 
+    src: dog_start.sh.j2 
+    dest: "/opt/dog.{{ git_hash }}/dog_start.sh"
+    mode: 0744
+
+- name: dog_stop.sh template
+  template: 
+    src: dog_stop.sh.j2
+    dest: "/opt/dog.{{ git_hash }}/dog_stop.sh"
+    mode: 0744
+
+- name: config.json
+  template: 
+    src: config.json.j2
+    dest: /etc/dog/config.json
+    mode: 0644
+    owner: dog
+    group: dog
+
+- name: restart dog
   service:
-    name: dog_park
+    name: dog
     state: restarted
     enabled: yes
   tags:

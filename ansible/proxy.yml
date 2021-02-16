@@ -1,0 +1,13 @@
+---
+
+- hosts: localhost
+  become: yes
+
+  roles: 
+    - proxy
+
+- hosts: containers
+  become: yes
+
+  roles: 
+    - proxy

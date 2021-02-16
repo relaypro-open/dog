@@ -1,11 +1,14 @@
 ---
 - hosts: dog-server
   become: yes
+
+  roles:
+    - nginx
+
+- hosts: dog-server
   vars:
     app: dog_park 
     app_owner: dog 
 
   roles:
-    - nginx
     - dog_park_deploy
-

@@ -1,12 +1,13 @@
 [all:vars]
 env=box
 dog_env=box
-provider=lxd
-ansible_connection=lxd
+provider=not-ec2
+#provider=lxd
+#ansible_connection=lxd
 erlang_package_version=1:22.3.4.9-1
 dog_trainer_repo=/ansible/repos/dog_trainer
 dog_agent_repo=/ansible/repos/dog_agent
-dog_park_repo=/ansible/repos/dog_park
+dog_park_repo=/repos/dog_park
 BUILD_ID=local
 dog_trainer_version=HEAD
 dog_agent_version=HEAD

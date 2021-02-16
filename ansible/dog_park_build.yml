@@ -1,6 +1,5 @@
 ---
 - hosts: localhost
-  become: yes
   vars:
     app: dog_park 
     app_owner: dog 

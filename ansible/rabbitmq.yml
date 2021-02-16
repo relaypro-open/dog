@@ -27,10 +27,10 @@
     when: ansible_os_family == "Debian" and env == "box"
 
   - name: setup rabbitmq-server service
-    service: name=rabbitmq-server enabled=yes state=started   
+    service: name=rabbitmq-server enabled=yes state=restarted   
 
   - name: wait for rabbitmq to start
-    wait_for: port=15672 delay=10
+    wait_for: port=15672 delay=30
       
   - name: remove default guest user
     rabbitmq_user: user=guest state=absent

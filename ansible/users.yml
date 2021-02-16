@@ -22,6 +22,32 @@
     groups: 
       - consul
     shell: /bin/bash
+- name: Add the group 'nginx'
+  group:
+    name: nginx
+    state: present
+    gid: 1050
+- name: Add the user 'nginx'
+  user:
+    name: nginx
+    uid: 1050
+    group: nginx
+
+- name: Set dog authorized key
+  file:
+    state: directory
+    path: '/home/dog/.ssh/'
+    owner: dog
+    group: dog
+    mode: 0700
+- name: Set dog authorized key
+  copy:
+    dest: '/home/dog/.ssh/authorized_keys'
+    src: '/home/vagrant/.ssh/authorized_keys'
+    owner: dog
+    group: dog
+    mode: 0600
+
 - name: add to sudo.d to account if applicable
   lineinfile: 
     dest: /etc/sudoers.d/dog 

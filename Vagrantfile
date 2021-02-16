@@ -2,22 +2,35 @@
 # vi: set ft=ruby :
 
 $script = <<-'SCRIPT'
-echo 'export HTTP_PROXY="192.168.145.1:3128"' >> /home/vagrant/.bashrc
-echo 'export HTTPS_PROXY="192.168.145.1:3128"' >> /home/vagrant/.bashrc
-echo 'export FTP_PROXY="192.168.145.1:3128"' >> /home/vagrant/.bashrc
-echo 'export NO_PROXY="localhost,127.0.0.1,::1"' >> /home/vagrant/.bashrc
+#!/bin/bash
+whoami
+#add vagrant key to ssh-agent
+ssh-add .vagrant/machines/dog-vm-host/virtualbox/private_key
 
-echo 'Acquire::http::Proxy "http://192.168.145.1:3128";' > /etc/apt/apt.conf
-echo 'Acquire::https::Proxy "http://192.168.145.1:3128";' >> /etc/apt/apt.conf
+echo $PATH
+#echo 'export HTTP_PROXY="http://192.168.145.1:3128"' | tee /etc/profile.d/proxy.sh
+#echo 'export HTTPS_PROXY="http://192.168.145.1:3128"' | tee -a /etc/profile.d/proxy.sh 
+#echo 'export FTP_PROXY="http://192.168.145.1:3128"' | tee -a /etc/profile.d/proxy.sh  
+#echo 'export NO_PROXY="localhost,127.0.0.1,::1"' | tee -a  /etc/profile.d/proxy.sh   
+#echo 'export http_proxy="http://192.168.145.1:3128"' | tee -a /etc/profile.d/proxy.sh   
+#echo 'export https_proxy="http://192.168.145.1:3128"' | tee -a /etc/profile.d/proxy.sh   
+#echo 'export ftp_proxy="http://192.168.145.1:3128" | tee -a /etc/profile.d/proxy.sh  '
+#echo 'export no_proxy="localhost,127.0.0.1,::1"' | tee -a /etc/profile.d/proxy.sh   
+#source /etc/profile.d/proxy.sh
+
+#echo 'Acquire::http::Proxy "http://192.168.145.1:3128";' |  tee /etc/apt/apt.conf
+#echo 'Acquire::https::Proxy "http://192.168.145.1:3128";' |  tee -a /etc/apt/apt.conf
 
 apt-get update -y
 snap install lxd --channel=4.0/stable
 lxd init --auto --storage-backend=btrfs --storage-create-loop=60 -v --network-address=127.0.0.1 --network-port=8443
 adduser vagrant lxd
 
-lxc config set core.proxy_http http://192.168.145.1:3128
-lxc config set core.proxy_https http://192.168.145.1:3128
-lxc config set core.proxy_ignore_hosts localhost
+lxc image import /ansible/lxd/ubuntu-20.04-server-cloudimg-amd64-lxd.tar.xz /ansible/lxd/ubuntu-20.04-server-cloudimg-amd64.squashfs --alias ubuntu-20.04
+
+#lxc config set core.proxy_http http://192.168.145.1:3128
+#lxc config set core.proxy_https http://192.168.145.1:3128
+#lxc config set core.proxy_ignore_hosts localhost
 
 lxc launch ubuntu:20.04 dog-agent1 #duplicated on purpose, workaround for libvirt/kvm/vagrant/image? bug
 lxc launch ubuntu:20.04 dog-agent1 #duplicated on purpose, workaround for libvirt/kvm/vagrant/image? bug
@@ -32,17 +45,26 @@ lxc config device add dog-server sitedir disk source=/home/vagrant path=/opt/hom
 lxc config device add dog-server dog-gui proxy listen=tcp:0.0.0.0:3000 connect=tcp:127.0.0.1:3000
 lxc config device add dog-server rethinkdb-gui proxy listen=tcp:0.0.0.0:8080 connect=tcp:127.0.0.1:8080
 lxc config device add dog-server rabbitmq-gui proxy listen=tcp:0.0.0.0:15672 connect=tcp:127.0.0.1:15672
+
+#add lxc container ips to /etc/hosts of vm
+
+#apt-get install -y python=3.8.2-0ubuntu2
+#apt-get install -y python3-pip=20.0.2-5ubuntu1.1
+apt-get install -y ansible=2.9.6+dfsg-1
+#ansible-galaxy collection install community.general
+#/ansible directory shared via vangrant sync folder
+#
+#setup to allow normal ssh access for ansible:
+
+#cd /ansible
+#pwd
+#ls -latr
+#whoami
+#echo "SSH_AUTH_SOCK: $SSH_AUTH_SOCK"
+#sudo --preserve-env=SSH_AUTH_SOCK -u vagrant /ansible/run_ansible.sh
 lxc restart dog-server
 lxc restart dog-agent1
 lxc restart dog-agent2
-apt-get install -y python=3.8.2-0ubuntu2
-apt-get install -y python3-pip=20.0.2-5ubuntu1.1
-apt-get install -y ansible=2.9.6+dfsg-1
-ansible-galaxy collection install community.general
-#/ansible directory shared via vangrant sync folder
-date +%s | sha256sum | base64 | head -c 32 > /ansible/ca_passphrase.txt
-cd /ansible
-ansible-playbook -i hosts main.yml
 SCRIPT
 
 # All Vagrant configuration is done below. The '2' in Vagrant.configure
@@ -50,11 +72,11 @@ SCRIPT
 # backwards compatibility). Please don't change it unless you know what
 # you're doing.
 Vagrant.configure('2') do |config|
-  if Vagrant.has_plugin?("vagrant-proxyconf")
-    config.proxy.http     = "http://192.168.145.1:3128/"
-    config.proxy.https    = "http://192.168.145.1:3128/"
-    config.proxy.no_proxy = "localhost,127.0.0.1"
-  end
+#  if Vagrant.has_plugin?("vagrant-proxyconf")
+#    config.proxy.http     = "http://192.168.145.1:3128/"
+#    config.proxy.https    = "http://192.168.145.1:3128/"
+#    config.proxy.no_proxy = "localhost,127.0.0.1"
+#  end
   # The most common configuration options are documented and commented below.
   # For a complete reference, please see the online documentation at
   # https://docs.vagrantup.com.
@@ -75,6 +97,8 @@ Vagrant.configure('2') do |config|
     config.vm.provider :virtualbox do |v|
       config.vm.hostname = 'dog-vm-host'
       config.vm.synced_folder 'ansible/', '/ansible'
+      config.ssh.forward_agent = true
+      #config.ssh.private_key_path = [ '~/.vagrant.d/insecure_private_key', '~/.ssh/id_rsa' ]
       v.name = 'dog-vm-host'
       v.check_guest_additions = true
       v.gui = false
@@ -89,6 +113,8 @@ Vagrant.configure('2') do |config|
     # sudo snap install lxd --channel=4.0/stableargument is a set of non-required options.
     # config.vm.synced_folder '../data', '/vagrant_data'
 
-    config.vm.provision 'shell', inline: $script
+    config.vm.provision 'shell', 
+      inline: $script#,
+      #privileged: false
   end
 end

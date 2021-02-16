@@ -27,7 +27,16 @@ vagrant up
 
 vagrant ssh-config | tee -a ~/.ssh/config
 
+ssh-add .vagrant/machines/dog-vm-host/virtualbox/private_key
+
+echo "provisioning script completed."
+
 echo "how to connect: 
 vagrant ssh 
 or
 ssh dog-vm-host"
+
+echo "to setup dog, ssh to dog-vm-host:
+ssh vagrant@dog-vm-host 
+cd /ansbile
+./run_ansible.sh"
