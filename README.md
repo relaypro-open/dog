@@ -71,7 +71,7 @@ Think of it as your guard dog.
 - Links are used to share the addresses of Groups and Zones (as ipsets) between multiple dog_trainers.
 
 ## Install
-- [dog_in_a _box](docs/dog__in_a__box.md)
+- [dog_in_a_box](docs/dog_in_a_box.md)
 - [dog_trainer](docs/dog_trainer.md)
 - [dog_park](docs/dog_park.md)
 - [dog_agent](docs/dog_agent.md)

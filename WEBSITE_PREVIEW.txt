@@ -1,0 +1,8 @@
+To preview the markup documentation locally:
+
+install asdf:
+  https://asdf-vm.com/#/core-manage-asdf-vm
+checkout dog
+cd dog
+bundle exec jekyll serve
+http://127.0.0.1:4000/
