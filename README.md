@@ -10,6 +10,7 @@
 6. [Security](#security)
 7. [Logical Elements](#logical-elements)
 8. [Install](#install)
+9. [Use](#use)
 
 ## What is dog?
 dog is a firewall management system designed to manage hundreds+ of servers.
