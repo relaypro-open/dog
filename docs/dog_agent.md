@@ -18,7 +18,7 @@ dog_agent is the client agent component of [dog](https://github.com/Phonebooth/d
 * [Logs](#logs)
 
 ## Runtime Dependencies
-- linux 4.x+ (Ubuntu 16.04 tested)
+- linux 4.x+ (CentOS 6, Ubuntu 16.04+ tested)
 - iptables
 - ipset
 
