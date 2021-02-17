@@ -75,3 +75,6 @@ Think of it as your guard dog.
 - [dog_trainer](docs/dog_trainer.md)
 - [dog_park](docs/dog_park.md)
 - [dog_agent](docs/dog_agent.md)
+
+## Use
+- [user_manual](docs/user_manual.md)
