@@ -4,7 +4,7 @@ vagrant plugin install vagrant-proxyconf
 # virtualbox
 vagrant plugin install vagrant-vbguest
 
-vagrant up
+vagrant up --provider=virtualbox
 
 vagrant ssh-config | tee -a ~/.ssh/config
 
