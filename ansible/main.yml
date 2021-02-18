@@ -1,45 +1,45 @@
 ---
-#- hosts: "containers"
-#  become: yes
-#  gather_facts: yes
-#  tasks:
-#    - include_tasks: users.yml
-#
-#- hosts: localhost
-#  connection: local
-#  roles:
-#    - { role: consul_ca_create }
-#
-#- hosts: "containers"
-#  become: yes
-#  gather_facts: yes
-#
-#  roles:
-#    - { role: consul_tls_cert }
-#
-#- name: rabbitmq playbook
-#  import_playbook: rabbitmq.yml
-#
-#- name: rethink playbook
-#  import_playbook: rethinkdb.yml
-#
-#- name: dog_trainer_build
-#  import_playbook: dog_trainer_build.yml
-#
-#- name: dog_trainer_deploy
-#  import_playbook: dog_trainer_deploy.yml
-#
-#- name: dog_park_build
-#  import_playbook: dog_park_build.yml
-#
-#- name: dog_park_deploy
-#  import_playbook: dog_park_deploy.yml
-#
-#- name: dog_agent_build
-#  import_playbook: dog_agent_build.yml
-#
-#- name: dog_agent_deploy
-#  import_playbook: dog_agent_deploy.yml
+- hosts: "containers"
+  become: yes
+  gather_facts: yes
+  tasks:
+    - include_tasks: users.yml
+
+- hosts: localhost
+  connection: local
+  roles:
+    - { role: consul_ca_create }
+
+- hosts: "containers"
+  become: yes
+  gather_facts: yes
+
+  roles:
+    - { role: consul_tls_cert }
+
+- name: rabbitmq playbook
+  import_playbook: rabbitmq.yml
+
+- name: rethink playbook
+  import_playbook: rethinkdb.yml
+
+- name: dog_trainer_build
+  import_playbook: dog_trainer_build.yml
+
+- name: dog_trainer_deploy
+  import_playbook: dog_trainer_deploy.yml
+
+- name: dog_park_build
+  import_playbook: dog_park_build.yml
+
+- name: dog_park_deploy
+  import_playbook: dog_park_deploy.yml
+
+- name: dog_agent_build
+  import_playbook: dog_agent_build.yml
+
+- name: dog_agent_deploy
+  import_playbook: dog_agent_deploy.yml
 
 - hosts: db-server
   tasks:
@@ -47,6 +47,7 @@
       apt:
         name: postgresql
         state: present
+        update_cache: yes
 
     - name: open postgres to all
       ansible.builtin.lineinfile:
@@ -66,6 +67,7 @@
       apt:
         name: nginx
         state: present
+        update_cache: yes
 
     - name: nginx service
       service:

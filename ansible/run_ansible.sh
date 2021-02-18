@@ -37,5 +37,5 @@ echo $PATH
 
 lxc list
 ansible-playbook -v -i hosts main.yml -u root
-
+sleep 10
 /ansible/repos/dog_trainer/test/box_verify.sh
