@@ -16,13 +16,13 @@ adduser vagrant lxd
 
 #lxc image import /ansible/lxd/ubuntu-20.04-server-cloudimg-amd64-lxd.tar.xz /ansible/lxd/ubuntu-20.04-server-cloudimg-amd64.squashfs --alias ubuntu-20.04
 
-lxc launch ubuntu:20.04 dog-agent1 #duplicated on purpose, workaround for libvirt/kvm/vagrant/image? bug
-lxc launch ubuntu:20.04 dog-agent1 #duplicated on purpose, workaround for libvirt/kvm/vagrant/image? bug
-lxc config set dog-agent1 raw.idmap 'both 1000 1000'
-lxc config device add dog-agent1 sitedir disk source=/home/vagrant path=/opt/home
-lxc launch ubuntu:20.04 dog-agent2
-lxc config set dog-agent2 raw.idmap 'both 1000 1000'
-lxc config device add dog-agent2 sitedir disk source=/home/vagrant path=/opt/home
+lxc launch ubuntu:20.04 app-server #duplicated on purpose, workaround for libvirt/kvm/vagrant/image? bug
+lxc launch ubuntu:20.04 app-server #duplicated on purpose, workaround for libvirt/kvm/vagrant/image? bug
+lxc config set app-server raw.idmap 'both 1000 1000'
+lxc config device add app-server sitedir disk source=/home/vagrant path=/opt/home
+lxc launch ubuntu:20.04 db-server
+lxc config set db-server raw.idmap 'both 1000 1000'
+lxc config device add db-server sitedir disk source=/home/vagrant path=/opt/home
 lxc launch ubuntu:20.04 dog-server
 lxc config set dog-server raw.idmap 'both 1000 1000'
 lxc config device add dog-server sitedir disk source=/home/vagrant path=/opt/home
@@ -47,8 +47,8 @@ apt-get install -y ansible=2.9.6+dfsg-1
 #echo "SSH_AUTH_SOCK: $SSH_AUTH_SOCK"
 #sudo --preserve-env=SSH_AUTH_SOCK -u vagrant /ansible/run_ansible.sh
 lxc restart dog-server
-lxc restart dog-agent1
-lxc restart dog-agent2
+lxc restart app-server
+lxc restart db-server
 SCRIPT
 
 # All Vagrant configuration is done below. The '2' in Vagrant.configure

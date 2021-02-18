@@ -18,8 +18,8 @@ agents
 server
 
 [agents]
-dog-agent1 dog_tag=app
-dog-agent2 dog_tag=db
+app-server dog_tag=app
+db-server dog_tag=db
 [agents:vars]
 
 [server]
@@ -29,3 +29,4 @@ rethinkdb_apt_version=2.4.1~0
 rethinkdb_config_template=files/rethinkdb/rethink.conf.j2
 rethinkdb_data_dir=/var/db/rethinkdb/dog_trainer
 #rabbitmq_apt_version=3.7.28-1
+#

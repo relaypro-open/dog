@@ -1,42 +1,74 @@
 ---
-- hosts: "containers"
-  become: yes
-  gather_facts: yes
+#- hosts: "containers"
+#  become: yes
+#  gather_facts: yes
+#  tasks:
+#    - include_tasks: users.yml
+#
+#- hosts: localhost
+#  connection: local
+#  roles:
+#    - { role: consul_ca_create }
+#
+#- hosts: "containers"
+#  become: yes
+#  gather_facts: yes
+#
+#  roles:
+#    - { role: consul_tls_cert }
+#
+#- name: rabbitmq playbook
+#  import_playbook: rabbitmq.yml
+#
+#- name: rethink playbook
+#  import_playbook: rethinkdb.yml
+#
+#- name: dog_trainer_build
+#  import_playbook: dog_trainer_build.yml
+#
+#- name: dog_trainer_deploy
+#  import_playbook: dog_trainer_deploy.yml
+#
+#- name: dog_park_build
+#  import_playbook: dog_park_build.yml
+#
+#- name: dog_park_deploy
+#  import_playbook: dog_park_deploy.yml
+#
+#- name: dog_agent_build
+#  import_playbook: dog_agent_build.yml
+#
+#- name: dog_agent_deploy
+#  import_playbook: dog_agent_deploy.yml
+
+- hosts: db-server
   tasks:
-    - include_tasks: users.yml
+    - name: install postgresql
+      apt:
+        name: postgresql
+        state: present
 
-- hosts: localhost
-  connection: local
-  roles:
-    - { role: consul_ca_create }
+    - name: open postgres to all
+      ansible.builtin.lineinfile:
+        path: /etc/postgresql/12/main/postgresql.conf
+        regexp: '^listen_addresses = (.*)'
+        line: listen_addresses = '*'
 
-- hosts: "containers"
-  become: yes
-  gather_facts: yes
+    - name: postgresql service
+      service:
+        name: postgresql
+        state: restarted
+        enabled: yes
 
-  roles:
-    - { role: consul_tls_cert }
+- hosts: app-server
+  tasks:
+    - name: install nginx
+      apt:
+        name: nginx
+        state: present
 
-- name: rabbitmq playbook
-  import_playbook: rabbitmq.yml
-
-- name: rethink playbook
-  import_playbook: rethinkdb.yml
-
-- name: dog_trainer_build
-  import_playbook: dog_trainer_build.yml
-
-- name: dog_trainer_deploy
-  import_playbook: dog_trainer_deploy.yml
-
-- name: dog_park_build
-  import_playbook: dog_park_build.yml
-
-- name: dog_park_deploy
-  import_playbook: dog_park_deploy.yml
-
-- name: dog_agent_build
-  import_playbook: dog_agent_build.yml
-
-- name: dog_agent_deploy
-  import_playbook: dog_agent_deploy.yml
+    - name: nginx service
+      service:
+        name: nginx
+        state: started
+        enabled: yes

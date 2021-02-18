@@ -6,13 +6,13 @@ echo "SSH_AUTH_SOCK: $SSH_AUTH_SOCK"
 date +%s | sha256sum | base64 | head -c 32 > /ansible/ca_passphrase.txt
 
 sudo sed -i '/.*\w*dog-server$/d' /etc/hosts
-sudo sed -i '/.*\w*dog-agent1$/d' /etc/hosts
-sudo sed -i '/.*\w*dog-agent2$/d' /etc/hosts
+sudo sed -i '/.*\w*app-server$/d' /etc/hosts
+sudo sed -i '/.*\w*db-server$/d' /etc/hosts
 sudo lxc list -c 4n --format csv | sed 's/ (.*),/\t/g' | sudo tee -a /etc/hosts
 
 lxc file push /home/vagrant/.ssh/authorized_keys dog-server/root/.ssh/authorized_keys --uid 0 --gid 0 --mode 0600
-lxc file push /home/vagrant/.ssh/authorized_keys dog-agent1/root/.ssh/authorized_keys --uid 0 --gid 0 --mode 0600
-lxc file push /home/vagrant/.ssh/authorized_keys dog-agent2/root/.ssh/authorized_keys --uid 0 --gid 0 --mode 0600
+lxc file push /home/vagrant/.ssh/authorized_keys app-server/root/.ssh/authorized_keys --uid 0 --gid 0 --mode 0600
+lxc file push /home/vagrant/.ssh/authorized_keys db-server/root/.ssh/authorized_keys --uid 0 --gid 0 --mode 0600
 
 cd /ansible
 
@@ -37,3 +37,5 @@ echo $PATH
 
 lxc list
 ansible-playbook -v -i hosts main.yml -u root
+
+/ansible/repos/dog_trainer/test/box_verify.sh

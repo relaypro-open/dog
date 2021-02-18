@@ -13,7 +13,8 @@ Vagrant is used to create a VirtualBox VM (dog-vm-host).
 dog-vm-host is a Ubuntu server, and acts as the build server for the applications
 and hosts three LXD containers, all running Ubuntu also.
 - dog-server: hosts dog_trainer, dog_park, rethinkdb, and rabbitmq
-- dog-agent1,2: each run dog_agent
+- app-server: runs nginx, dog_agent
+- db-server: runs postgresql, dog_agent
 
 # Install:
 - ensure your ssh-agent has the key(s) needed to access dog repos
