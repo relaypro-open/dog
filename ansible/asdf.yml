@@ -11,7 +11,7 @@
     - name: "elixir"
       versions: ["1.9.4"]
       global: "1.9.4"
-lxc config trust list
+      #lxc config trust list
       #  tasks:
       #  - name: copy .asdf to /home/vagrant to avoid second build
       #    become: yes

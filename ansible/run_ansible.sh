@@ -16,6 +16,7 @@ lxc file push /home/vagrant/.ssh/authorized_keys dog-agent2/root/.ssh/authorized
 
 cd /ansible
 
+# Install erlang build dependencies
 sudo apt-get -y install build-essential autoconf m4 libncurses5-dev libpng-dev libssh-dev xsltproc libxml2-utils libncurses-dev unzip
 #cp -r /ansible/vagrant_dot_asdf /home/vagrant/.asdf
 #sudo cp /ansible/vagrant_profile-d_asdf_sh /etc/profile.d/asdf.sh
@@ -36,4 +37,3 @@ echo $PATH
 
 lxc list
 ansible-playbook -v -i hosts main.yml -u root
-logout
