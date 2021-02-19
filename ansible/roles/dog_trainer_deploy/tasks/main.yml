@@ -177,7 +177,3 @@
     enabled: yes
   tags:
   - upgrade
-
-- name: box env configuration
-  command: /ansible/repos/dog_trainer/test/box_setup.sh
-  when: env == "box"

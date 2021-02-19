@@ -1,6 +1,6 @@
 ---
 #dependencies
-  - name: install iptables,iptables-persistent,ipset,jq,awk
+  - name: install iptables,iptables-persistent,ipset,jq
     become: yes
     apt: 
       name:
@@ -8,7 +8,6 @@
         - iptables-persistent
         - ipset
         - jq
-        - awk
       state: present
       update_cache: yes
 
