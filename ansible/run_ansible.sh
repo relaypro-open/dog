@@ -37,6 +37,8 @@ echo $PATH
 
 lxc list
 ansible-playbook -v -i hosts main.yml -u root
+
+sudo apt-get install -y jq facter
 cd /ansible/repos/dog_trainer/test
 ./box_setup.sh
 sleep 20
