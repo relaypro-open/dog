@@ -1,12 +1,14 @@
 ---
 #dependencies
-  - name: install iptables,iptables-persistent,ipset,jq
+  - name: install iptables,iptables-persistent,ipset,jq,facter,ruby
     apt: 
       name:
         - iptables
         - iptables-persistent
         - ipset
         - jq
+        - facter
+        - ruby
       state: present
 
   - name: copy systemd dog_trainer.service

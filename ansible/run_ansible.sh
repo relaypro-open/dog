@@ -38,6 +38,6 @@ echo $PATH
 lxc list
 ansible-playbook -v -i hosts main.yml -u root
 cd /ansible/repos/dog_trainer/test
-box_setup.sh
+./box_setup.sh
 sleep 20
-box_verify.sh
+./box_verify.sh
