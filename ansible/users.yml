@@ -53,5 +53,14 @@
     dest: /etc/sudoers.d/dog 
     state: present 
     create: true 
-    line: 'dog ALL = NOPASSWD: ALL'
+    line: 'dog ALL = NOPASSWD: /sbin/iptables-save, /sbin/ip6tables-restore, /sbin/ip6tables-save, /sbin/ip6tables-restore, /sbin/xtables-multi, /sbin/ipset'
     mode: 0440
+
+- name: disable sudoers logging for dog user
+  lineinfile: 
+    dest: /etc/sudoers.d/dog 
+    state: present 
+    create: true 
+    line: 'Defaults:dog !syslog'
+    mode: 0440
+

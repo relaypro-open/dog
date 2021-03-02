@@ -147,6 +147,13 @@
 - name: mkdir /tmp/erl_pipes/dog
   file: dest=/tmp/erl_pipes/dog owner=dog group=dog state=directory mode=0700
 
+- name: give dog group rights to /etc/iptables
+  file:
+    path: /etc/iptables/
+    group: dog
+    recurse: yes
+    mode: 0774
+
   #- name: local config template
   #  template: src="{{ dog_agent_repo }}/config/templates/local.sys.config.j2" dest="{{ dog_agent_repo }}/config/local.sys.config"
   #- name: qa config template
