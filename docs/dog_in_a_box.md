@@ -11,9 +11,9 @@ from scratch, and a way to easily try out dog.
 
 # Details
 
-Vagrant is used to create a VirtualBox VM (dog-vm-host).  
-dog-vm-host is a Ubuntu server, and acts as the build server for the applications
-and hosts three LXD containers, all running Ubuntu also.
+[Vagrant](https://www.vagrantup.com) is used to create a VirtualBox VM (dog-vm-host).  
+dog-vm-host is an Ubuntu server that hosts three LXD containers, all running Ubuntu also.
+It is also the build server for the applications that are deployed to those containers.
 
 - dog-server: hosts dog_trainer, dog_park, rethinkdb, and rabbitmq
 - app-server: runs nginx, dog_agent
@@ -25,22 +25,26 @@ and hosts three LXD containers, all running Ubuntu also.
 
 ## Linux (ubuntu 20.04, 20.10 host tested)
 
-    git clone git@github.com:Phonebooth/dog.git
+```bash
+git clone git@github.com:Phonebooth/dog.git
 
-    cd dog
+cd dog
 
-    ./install_dog_in_a_box-linux.sh
+./install_dog_in_a_box-linux.sh
+```
 
 ## MacOS
 
-- install Vagrant: (<http://vagrantup.com>)
-- install VirtualBox: (<http://virtualbox.org>) - reboot required
+- install [Vagrant](http://vagrantup.com)
+- install [VirtualBox](http://virtualbox.org) - reboot required
 
-    git clone git@github.com:Phonebooth/dog.git
+```bash
+git clone git@github.com:Phonebooth/dog.git
 
-    cd dog
+cd dog
 
-    ./install_dog_in_a_box-mac.sh
+./install_dog_in_a_box-mac.sh
+```
 
 # Use
 

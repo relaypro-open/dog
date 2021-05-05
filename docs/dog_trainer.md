@@ -49,7 +49,9 @@ Create the CA and store it in a secure location,
 
 - example:
 
-      scripts/ansible/dog_create_ca_cert.yml
+```bash
+scripts/ansible/dog_create_ca_cert.yml
+```
 
 #### Create server cert
 
@@ -57,13 +59,17 @@ One TLS cert must be created for each dog_trainer and dog_agent server
 
 - example:
 
-      scripts/ansible/setup_dog_cert.yml
+```bash
+scripts/ansible/setup_dog_cert.yml
+```
 
 ### RethinkDB setup
 
 #### Install RethinkDB
 
-      sudo apt install rethinkdb=2.3.6~0xenial
+```bash
+sudo apt install rethinkdb=2.3.6~0xenial
+```
 
 #### Setup clustering
 
@@ -77,10 +83,15 @@ for that purpose.
 
 #### Create database tables and indexes
 
-      #edit src/rethink_db_setup.erl
-      $ ./rebar3 shell
-      1> rethink_db_setup:setup_rethinkdb($ENV_NAME).
-      2> dog_ipset:set_hash(dog_ipset:create_hash(dog_ipset:create_ipsets())).
+```bash
+#edit src/rethink_db_setup.erl
+$ ./rebar3 shell
+```
+
+```erlang
+1> rethink_db_setup:setup_rethinkdb($ENV_NAME).
+2> dog_ipset:set_hash(dog_ipset:create_hash(dog_ipset:create_ipsets())).
+```
 
 ### RabbitMQ setup
 
@@ -90,17 +101,21 @@ for that purpose.
 
 #### Copy and edit config
 
-      cp config/rabbitmq/rabbitmq.conf /etc/rabbitmq/
-      #edit rabbitmq to reflect location of certs and 
-      #you should replace PRIVATE_IP with an IP that is not accessible via the
-      pubilc internet.
-      cp config/rabbitmq/enabled_plugins /etc/rabbitmq/
-      restart rabbitmq-server
+```bash
+cp config/rabbitmq/rabbitmq.conf /etc/rabbitmq/
+#edit rabbitmq to reflect location of certs and 
+#you should replace PRIVATE_IP with an IP that is not accessible via the
+#pubilc internet.
+cp config/rabbitmq/enabled_plugins /etc/rabbitmq/
+restart rabbitmq-server
+```
 
 #### Create virtual host and admin users
 
-      #edit setup_rabbitmq.sh, define variables.
-      script/setup_rabbitmq.sh
+```bash
+#edit setup_rabbitmq.sh, define variables.
+script/setup_rabbitmq.sh
+```
 
 ### Networking
 
@@ -128,32 +143,42 @@ the public internet.
 
 Create directories:
 
-    ./install.sh
+```bash
+./install.sh
+```
 
 If credentials stored in credstash, run to fill templates:
 
-    cd dog_trainer/template_setup
-    $ ../rebar3 shell
-    1> template_setup:main().
-    otherwise copy config/templates/*.dtl to config/ and manually update credentials.
+```bash
+cd dog_trainer/template_setup
+$ ../rebar3 shell
+1> template_setup:main().
+#otherwise copy config/templates/*.dtl to config/ and manually update credentials.
+```
 
 ## Build Release Deploy
 
-    $ rebar as $ENV tar
+```bash
+$ rebar as $ENV tar
 
-    copy tar to system, extract to /opt/dog_trainer
+#copy tar to system, extract to /opt/dog_trainer
+```
 
 ## Run
 
 Setup systemd service
 
-    cp config/dog_trainer.service /lib/systemd/system/dog_trainer.service
-    $ systemctl enable dog_trainer
-    $ systemctl start dog_trainer
+```bash
+cp config/dog_trainer.service /lib/systemd/system/dog_trainer.service
+systemctl enable dog_trainer
+systemctl start dog_trainer
+```
 
 ## Logs
 
-    /var/log/dog_trainer/
+```bash
+/var/log/dog_trainer/
+```
 
 ## Deploy Agents
 
