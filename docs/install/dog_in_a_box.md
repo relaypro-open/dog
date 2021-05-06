@@ -5,13 +5,12 @@
 <h1>dog_in_a_box</h1>
 
 dog_in_a_box is a complete dog test/dev environment implemented on containers in
-a local virtual machine.
+a virtual machine.
 It's meant to provide a way to test changes to dog in a full environment built
-from scratch, and a way to easily try out dog.
+from scratch, as well as a way to easily try out dog.
 
-# Details
-
-[Vagrant](https://www.vagrantup.com) is used to create a VirtualBox VM (dog-vm-host).  
+---
+  
 dog-vm-host is an Ubuntu server that hosts three LXD containers, all running Ubuntu also.
 It is also the build server for the applications that are deployed to those containers.
 
@@ -21,30 +20,9 @@ It is also the build server for the applications that are deployed to those cont
 
 # Install
 
-- ensure your ssh-agent has the key(s) needed to access dog repos
-
-## Linux (ubuntu 20.04, 20.10 host tested)
-
-```bash
-git clone git@github.com:Phonebooth/dog.git
-
-cd dog
-
-./install_dog_in_a_box-linux.sh
-```
-
-## MacOS
-
-- install [Vagrant](http://vagrantup.com)
 - install [VirtualBox](http://virtualbox.org) - reboot required
-
-```bash
-git clone git@github.com:Phonebooth/dog.git
-
-cd dog
-
-./install_dog_in_a_box-mac.sh
-```
+- download a dog_in_a_box [image](http://github.com/relaypro-open/download/dog_in_a_box.vdi)
+- create an Linux(Ubuntu) VM, import image, start VM.
 
 # Use
 
@@ -56,4 +34,32 @@ localhost ports
 - rethinkdb [http://localhost:8080](http://localhost:8080)
 
 - rabbitmq [http://localhost:15672](http://localhost:15672)
+
+## Build
+
+[Vagrant](https://www.vagrantup.com) is used to create a VirtualBox VM (dog-vm-host).
+ensure your ssh-agent has the key(s) needed to access dog repos
+
+### Linux (ubuntu 20.04, 20.10 host tested)
+
+```bash
+git clone git@github.com:Phonebooth/dog.git
+
+cd dog
+
+./install_dog_in_a_box-linux.sh
+```
+
+### MacOS
+
+- install [Vagrant](http://vagrantup.com)
+- install [VirtualBox](http://virtualbox.org) - reboot required
+
+```bash
+git clone git@github.com:Phonebooth/dog.git
+
+cd dog
+
+./install_dog_in_a_box-mac.sh
+```
 

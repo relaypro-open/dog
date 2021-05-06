@@ -14,9 +14,10 @@
 
 ## What is dog?
 
-dog is a firewall management system designed to manage hundreds+ of servers.
+dog is a distributed firewall management system designed to manage hundreds+ of
+per-server firewalls.
 
-Think of it as your guard dog.
+dog is your network guard dog.
 
 ## Why dog?
 
@@ -26,23 +27,25 @@ Think of it as your guard dog.
 - Need blocklists with thousands of addresses distributed across many servers
   updated constantly?
 - Need to limit number of connections and/or bandwidth usage?
-- Sick of error-prone manual updates of per-server iptables?
+- Sick of error-prone manual updates of per-server iptables rules?
 
 ## Features
 
 - Centrally manage hundreds+ of per-server iptables firewalls.  
 - Works across clouds, regions, and on-premise infrastructure.
 - Adapts to dynamic address changes.
-- Large blocklists/allowlists can be used and will be updated in seconds across
-  all servers.
-- Rules scale to tens of thousands of addresses (ipsets).
+- Large blocklists/allowlists can be used and will be updated across
+  all servers in seconds.
+- Rules scale to tens of thousands of addresses (using [ipsets](https://ipset.netfilter.org)).
 - Alerts if servers fail to communicate or if their firewalls are modified
   outside of dog control.
-- Nice web interface.
+- Reactive web interface.
 - API for external integrations.
 - Tested in production with hundreds of servers.
 - Multiple dog_trainers can be federated together to allow sharing of addresses,
   while allowing each dog_trainer to have it's own security rules.
+- Integration with [Flan Scan](https://github.com/cloudflare/flan),
+  a network vulnerability scanner.
 
 ## Components
 
@@ -97,11 +100,11 @@ Think of it as your guard dog.
 
 ## Install
 
-- [dog_in_a_box](docs/dog_in_a_box.md)
-- [dog_trainer](docs/dog_trainer.md)
-- [dog_park](docs/dog_park.md)
-- [dog_agent](docs/dog_agent.md)
+- [dog_in_a_box](docs/install/dog_in_a_box.md)
+- [dog_trainer](docs/install/dog_trainer.md)
+- [dog_park](docs/install/dog_park.md)
+- [dog_agent](docs/install/dog_agent.md)
 
 ## Use
 
-- [user_manual](docs/user_manual.md)
+- [user_manual](docs/user_manual/user_manual.md)

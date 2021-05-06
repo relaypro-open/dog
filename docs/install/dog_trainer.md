@@ -183,13 +183,3 @@ systemctl start dog_trainer
 ## Deploy Agents
 
   [Agents](https://github.com/Phonebooth/dog_agent)
-
-## Other
-
-### Useful DB queries
-
-[DB Queries](docs/common_reql.md)
-
-### Useful shell commands
-
-[Commands](docs/shell.md)
