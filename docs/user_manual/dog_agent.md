@@ -6,13 +6,13 @@
 
 dog_agent is the component of dog that runs on each server, controlling it's firewall.
 
-- start: `sudo systemctl start dog`
+- Start: `sudo systemctl start dog`
 
-- stop: `sudo systemctl stop dog`
+- Stop: `sudo systemctl stop dog`
 
-- log location: `/var/log/dog`
+- Log location: `/var/log/dog`
 
-- configuration files: `/etc/dog/`
+- Configuration files: `/etc/dog/`
 
     If you create config.json before you connect to dog_trainer, dog_trainer will
     create the host and assign it to the group specified.\
@@ -51,7 +51,9 @@ dog_agent is the component of dog that runs on each server, controlling it's fir
      iptables-docker-filter.txt
 ```
 
-- scripts in `/opt/dog/scripts/`
+- Erlang console access is disabled in dog_agent
+
+- Scripts in `/opt/dog/scripts/`
 
     - hashes.escript: displays hashes of local temp files
 
@@ -73,3 +75,109 @@ dog_agent is the component of dog that runs on each server, controlling it's fir
     ipset.txt:               b7a27a39fe4a75f87bd5e49f623529f092edc8de3abe23d912599fdf55270a03
     ```
 
+- Capabilities
+    
+    Originally dog_agent used sudo rights.  To better limit what rights dog_agent has, Linux [capabilities](https://blog.container-solutions.com/linux-capabilities-why-they-exist-and-how-they-work) are used instead.  For systems with systemd, those capabilities are granted to the process via the service file definition
+
+    dog.service
+    ```bash
+    ...
+    [Service]
+        CapabilityBoundingSet=CAP_DAC_READ_SEARCH CAP_NET_ADMIN CAP_NET_RAW
+        AmbientCapabilities=CAP_DAC_READ_SEARCH CAP_NET_ADMIN CAP_NET_RAW
+    ...
+    ```
+    For systems without systemd, those capabilities are granted to special binaries available only to the dog user.
+    ```bash
+    $ getcap /home/dog/bin/*
+    ip6tables-restore = cap_dac_read_search,cap_net_admin,cap_net_raw+ep
+    ip6tables-save = cap_dac_read_search,cap_net_admin,cap_net_raw+ep
+    ipset = cap_net_admin,cap_net_raw+ep
+    iptables-restore = cap_dac_read_search,cap_net_admin,cap_net_raw+ep
+    iptables-save = cap_dac_read_search,cap_net_admin,cap_net_raw+ep
+    ```
+
+    Both systemd and systemd-less systems use the /home/bin/dog/* binaries, but the systemd system doesn't have file based capabilities set.
+
+- Configuration is stored in a file called sys.config, which is located in /opt/dog/releases/$VERSION/ 
+
+  example sys.config, annotated:
+
+```bash
+    [
+    {kernel,[{inet_dist_use_interface,{127,0,0,1}}]},
+    {dog, [
+        {version, ""}, # git version
+        {enforcing, true}, # whether dog applies it's rules or not.
+        {use_ipsets, true}, # whether to use ipsets version of iptables rules.
+        {watch_interfaces_poll_seconds, 5}, # how often to poll interfaces for changes.
+        {keepalive_poll_seconds, 60} # how often to send a keepalive message to dog_trainer.
+    ]},
+    {sync, [
+        {growl, none},
+        {log, [all]},
+        {non_descendants, fix},
+        {executable, auto},
+        {whitelisted_modules, []},
+        {excluded_modules, []}
+    ]},
+    {lager, [
+        {handlers, [ # log levels and locations
+            {lager_console_backend, [{level, error}]},
+            {lager_file_backend, [{file, "/var/log/dog/error.log"}, {level, error}]},
+            {lager_file_backend, [{file, "/var/log/dog/console.log"}, {level, info }]}
+        ]},
+        {crash_log, "/var/log/dog/crash.log"},
+        {tracefiles, [
+                    ]},
+        {async_threshold, 10000},
+        {sieve_threshold, 5000},
+        {sieve_window, 100},
+        {colored, true}
+    ]},
+    {thumper, [
+        {substitution_rules,[
+           {fqdn, {dog_interfaces,fqdn,[]}},
+           {environment, {dog_config,environment,[]}},
+           {location, {dog_config,location,[]}},
+           {group, {dog_config,group,[]}},
+           {hostkey, {dog_config,hostkey,[]}}
+        ]},
+        {thumper_svrs, [default, publish]},
+        {brokers, [
+            {default, [
+                {rabbitmq_config, # rabbitmq connection configuration
+                   [
+                        {host, ""},
+                        {port, 5673},
+                        {api_port, 15672},
+                        {virtual_host, <<"dog">>},
+                        {user, <<"dog">>},
+                        {password, <<"">>},
+                        {ssl_options, [{cacertfile, "/var/consul/data/pki/certs/ca.crt"},
+                                       {certfile, "/var/consul/data/pki/certs/server.crt"},
+                                       {keyfile, "/var/consul/data/pki/private/server.key"},
+                                       {verify, verify_peer},
+                                       {server_name_indication, disable},
+                                       {fail_if_no_peer_cert, true}
+                                      ]},
+                     {broker_config,
+                        {thumper_tx, {callback, {dog_config, broker_config, []}}}
+                     }
+                    ]}]},
+            {publish, [{rabbitmq_config, default}]}
+        ]},
+        {queuejournal,
+            [
+                {enabled, false}, # we don't want local queue caching; that would dump old data to dog_trainer on reconnect.
+                {dir, "/opt/dog/queuejournal"},
+                {memqueue_max, 10000},
+                {check_journal, true}
+            ]
+        }
+    ]},
+    {erldocker, [ # Docker socket
+        {docker_http, <<"http+unix://%2Fvar%2Frun%2Fdocker.sock">>}
+    ]}
+].
+```

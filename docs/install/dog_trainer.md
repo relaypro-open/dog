@@ -93,6 +93,14 @@ $ ./rebar3 shell
 2> dog_ipset:set_hash(dog_ipset:create_hash(dog_ipset:create_ipsets())).
 ```
 
+#### Import default Services
+
+Definitions for some well known services can be imported.
+
+```bash
+rethinkdb import -f /opt/dog_trainer/scripts/default_services.json --table dog.service
+```
+
 ### RabbitMQ setup
 
 #### install RabbitMQ

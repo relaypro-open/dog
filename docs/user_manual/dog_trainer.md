@@ -16,45 +16,46 @@ Components:
 dog_trainer is deployed as an Erlang release, which is a way to combine the application and all of the Erlang language
 componenents needed.
 
-- start: `sudo systemctl start dog_trainer`
+- Start: `sudo systemctl start dog_trainer`
 
-- stop: `sudo systemctl stop dog_trainer`
+- Stop: `sudo systemctl stop dog_trainer`
 
-- log location: `/var/log/dog_trainer`
+- Log location: `/var/log/dog_trainer`
 
-- temp file location: `/tmp/dog_trainer`
+- Temp file location: `/tmp/dog_trainer`
 
 - Useful shell commands [Commands](dog_trainer-shell.md)
 
-- configuration is stored in a file called sys.config, which is located in /opt/dog_trainer/releases/$VERSION/ 
-- sys.config annotated
+- Configuration is stored in a file called sys.config, which is located in /opt/dog_trainer/releases/$VERSION/ 
 
-```erlang
+  example sys.config annotated:
+
+```bash
       [
     {dog_trainer, [
-        {env, "q1"}, % name of this dog_trainer's environment, limited to two characters.  needs to be unique between any linked dog_trainers.
+        {env, "q1"}, # name of this dog_trainer's environment, limited to two characters.  needs to be unique between any linked dog_trainers.
         {version, "20180423-180410-relflow"}, 
-        {smtp_relay,"smtp.sendgrid.net"}, % email configuration for alerts
+        {smtp_relay,"smtp.sendgrid.net"}, # email configuration for alerts
         {smtp_username, "" },
         {smtp_password, "" },
-        {smtp_to, [""]}, % list of email recipients.
+        {smtp_to, [""]}, # list of email recipients.
         {smtp_from,""},
-        {polling_interval_seconds,60}, % how often 
-        {keepalive_alert_seconds,1800}, % time a dog_agent can not communicate before being considered 'inactive'.
-        {rethinkdb_host, "dog-db-qa.nocell.io"}, % rethinkdb config
+        {polling_interval_seconds,60}, # how often 
+        {keepalive_alert_seconds,1800}, # time a dog_agent can not communicate before being considered 'inactive'.
+        {rethinkdb_host, "dog-db-qa.nocell.io"}, # rethinkdb config
         {rethinkdb_port, 28015},
         {smtp_password, "" },
         {rethinkdb_username, "" },
         {rethinkdb_password, "" },
         {rethink_timeout_ms, 10000},
-        {rethink_squash_sec, 1.0}, % how many seconds to combine rethink streams before applying them.
-        {profile_periodic_publish_interval_seconds, 5},  % how often to publish iptables updates, if they are queued.
-        {ipset_periodic_publish_interval_seconds, 5}, % how often to publish global ipsets, if an update is queued.
-        {check_v6_hashes, true}, % whether dog_agent IPv6 ipset hashes are checked by dog_trainer.
-        {generate_unset_tables, false}, % whether to generate and publish naive (one IP per line) iptables in addition to iptables that use ipsets.
-        {max_interval_since_last_agent_update,2}, % how many intervals to wait when no dog_agent updates are received before dog_trainer stops applying updates.
-                                                  % this is done to ensure a dog_trainer that is having a network will not set all hosts as inactive or retired.
-        {pools, [ % rethinkdb db pool configuration.
+        {rethink_squash_sec, 1.0}, # how many seconds to combine rethink streams before applying them.
+        {profile_periodic_publish_interval_seconds, 5},  # how often to publish iptables updates, if they are queued.
+        {ipset_periodic_publish_interval_seconds, 5}, # how often to publish global ipsets, if an update is queued.
+        {check_v6_hashes, true}, # whether dog_agent IPv6 ipset hashes are checked by dog_trainer.
+        {generate_unset_tables, false}, # whether to generate and publish naive (one IP per line) iptables in addition to iptables that use ipsets.
+        {max_interval_since_last_agent_update,2}, # how many intervals to wait when no dog_agent updates are received before dog_trainer stops applying updates.
+                                                  # this is done to ensure a dog_trainer that is having a network will not set all hosts as inactive or retired.
+        {pools, [ # rethinkdb db pool configuration.
             {pool1, [
                 {size, 10},
                 {max_overflow, 20}
@@ -81,7 +82,7 @@ componenents needed.
         {sieve_threshold, 5000},
         {sieve_window, 100}
     ]},
-    {thumper, [ % thumper is the rabbitmq client library.  certificates should always be used.
+    {thumper, [ # thumper is the rabbitmq client library.  certificates should always be used.
         {substitution_rules, [{cluster, {edb, get_cluster_id, []}}]},
         {thumper_svrs, [default, publish]},
         {brokers, [
@@ -92,8 +93,8 @@ componenents needed.
                         {port, 5673},
                         {api_port, 15672},
                         {virtual_host, <<"dog">>},
-                        {user, "{% get_secret name="dog_trainer>rabbitmq_username" table="credential-store_mob_qa" %}" },
-                        {password, "{% get_secret name="dog_trainer>rabbitmq_password" table="credential-store_mob_qa" %}" },
+                        {user, "" },
+                        {password, "" },
                         {ssl_options, [{cacertfile, "/var/consul/data/pki/certs/ca.crt"},
                                        {certfile, "/var/consul/data/pki/certs/server.crt"},
                                        {keyfile, "/var/consul/data/pki/private/server.key"},
@@ -107,7 +108,7 @@ componenents needed.
                     ]}]},
             {publish, [{rabbitmq_config, default}]}
         ]},
-        {queuejournal, % local rabbitmq queueing
+        {queuejournal, # local rabbitmq queueing
             [
                 {enabled, true},
                 {dir, "/var/db/dog_trainer/queuejournal"},
@@ -118,6 +119,11 @@ componenents needed.
     ]}
 ].
 ```
+
+- Erlang console: `/opt/dog/dog_trainer remote_console`
+
+    Useful commands:
+    - [observer_cli](https://github.com/zhongwencool/observer_cli):start()
 
 # rethinkdb
 
