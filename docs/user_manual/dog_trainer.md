@@ -14,7 +14,7 @@ Components:
 # dog_trainer
 
 dog_trainer is deployed as an Erlang release, which is a way to combine the application and all of the Erlang language
-componenents needed.
+components needed.
 
 - Start: `sudo systemctl start dog_trainer`
 

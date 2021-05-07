@@ -46,6 +46,8 @@ dog is your network guard dog.
   while allowing each dog_trainer to have it's own security rules.
 - Integration with [Flan Scan](https://github.com/cloudflare/flan),
   a network vulnerability scanner.
+- Agents support Linux 2.6+ iptables firewalls.
+- Supports cloud public IP addresses (currently only EC2).
 
 ## Components
 
@@ -84,19 +86,6 @@ dog is your network guard dog.
 - dog's use of ipsets not only allows highly scalable, fast rulesets, it also
   keeps iptables size small enough to be auditable by a human.
 
-## Logical Elements
-
-- Hosts are servers with Agents installed.
-- Zones are static lists of addresses.
-- Groups are collections of Hosts.
-- Profiles are lists of Rules, and are assigned to Groups.
-- Rules can include either Groups or Zones along with Services that describe the
-  controlled protocols.
-- Iptables are generated from these Rules and distributed to Agents.
-- Ipsets are used to make fast, readable iptables rules even with thousands of addresses.
-
-- Links are used to share the addresses of Groups and Zones (as ipsets) between
-  multiple dog_trainers.
 
 ## Install
 
@@ -108,3 +97,21 @@ dog is your network guard dog.
 ## Use
 
 - [user_manual](docs/user_manual/user_manual.md)
+
+## RoadMap
+- [ ] Version and document the API
+- Agent support for
+    - More Linux distros
+        - [ ] Arch
+    - Other \*nix OSes
+        - [ ] BSD
+- Support for other firewall types
+    - [ ] nftables (beyond iptables-legacy compatibility support)
+- Manage Cloud security groups
+    - [ ] AWS EC2
+    - [ ] Google Cloud
+    - [ ] Microsoft Azure
+- Support Cloud Instances
+    - [x] AWS EC2
+    - [ ] Google Cloud
+    - [ ] Microsoft Azure

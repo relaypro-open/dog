@@ -36,7 +36,7 @@ a centralized firewall management system.
 
 If you already have a CA and per-server certs, you can reuse them, or buy new ones
 (costly).
-You can create your own self-signed certs with your own Certificat Authority.
+You can create your own self-signed certs with your own Certificate Authority.
 
 Examples Ansible scripts are provided to get you started.  Examples use Credstash
 to securely store the CA files [credstash](https://github.com/fugue/credstash)

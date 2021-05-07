@@ -23,6 +23,7 @@ a centralized firewall management system.
 - linux 4.x+ (CentOS 6, Ubuntu 16.04+ tested)
 - iptables
 - ipset
+- Only supports cloud public IP addresses on AWS EC2.
 
 ## Runtime Dependencies Setup
 
