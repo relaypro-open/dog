@@ -11,6 +11,7 @@
 1. [Logical Elements](#logical-elements)
 1. [Install](#install)
 1. [Use](#use)
+1. [Road Map](#road-map)
 
 ## What is dog?
 
@@ -98,7 +99,7 @@ dog is your network guard dog.
 
 - [user_manual](docs/user_manual/user_manual.md)
 
-## RoadMap
+## Road Map
 - [ ] Version and document the API
 - Agent support for
     - More Linux distros
