@@ -65,7 +65,7 @@ dog is your network guard dog.
 
 ## Architecture
 
-![dog](images/dog_family_overview_landscape-1.1.jpg)
+![dog](images/dog_family_overview_landscape-1.1-black.png)
 
 - dog Agents communicate with dog_trainer over RabbitMQ queues.
 - dog_trainer stores it's configuration in a RethinkDB database.
