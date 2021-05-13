@@ -6,20 +6,30 @@
 
 dog_agent is the component of dog that runs on each server, controlling it's firewall.
 
-- Start: `sudo systemctl start dog`
+## Start
 
-- Stop: `sudo systemctl stop dog`
+`sudo systemctl start dog`
 
-- Log location: `/var/log/dog`
+## Stop
 
-- Configuration files: `/etc/dog/`
+`sudo systemctl stop dog`
 
-    If you create config.json before you connect to dog_trainer, dog_trainer will
-    create the host and assign it to the group specified.\
+## Log location
 
-    config.json: configuration file
+`/var/log/dog`
 
-    ```bash
+## Configuration files
+
+Located in `/etc/dog/`
+
+If you create config.json before you connect to dog_trainer, dog_trainer will
+create the host and assign it to the group specified.
+
+config.json: configuration file
+
+example:
+
+```bash
       {
       "environment":"*", # currently unused
       "group":"opengrok_qa", # dog group the host is assigned to
@@ -28,9 +38,9 @@ dog_agent is the component of dog that runs on each server, controlling it's fir
       }
 ```
 
-    The remainder are temp files, useful for debugging: 
+The remainder are temp files, useful for debugging: 
 
-    ```bash
+```bash
     ipset.txt # global ipsets
 
     # iptables files as received from dog_trainer:
@@ -51,14 +61,19 @@ dog_agent is the component of dog that runs on each server, controlling it's fir
      iptables-docker-filter.txt
 ```
 
-- Erlang console access is disabled in dog_agent
+## Erlang console access
 
-- Scripts in `/opt/dog/scripts/`
+Console access is disabled in dog_agent
 
-    - hashes.escript: displays hashes of local temp files
+## Scripts
 
-    example output:
-    ```bash
+located in `/opt/dog/scripts/`
+
+- hashes.escript: displays hashes of local temp files
+
+  example output:
+
+```bash
     config.json:
     {"environment":"*","group":"opengrok_qa","hostkey":"2cf5115b7720132b40bd37cef9021f4782e2f7d1","location":"*"}
     
@@ -73,35 +88,46 @@ dog_agent is the component of dog that runs on each server, controlling it's fir
     
     ipset save:              b7a27a39fe4a75f87bd5e49f623529f092edc8de3abe23d912599fdf55270a03
     ipset.txt:               b7a27a39fe4a75f87bd5e49f623529f092edc8de3abe23d912599fdf55270a03
-    ```
+```
 
-- Capabilities
-    
-    Originally dog_agent used sudo rights.  To better limit what rights dog_agent has, Linux [capabilities](https://blog.container-solutions.com/linux-capabilities-why-they-exist-and-how-they-work) are used instead.  For systems with systemd, those capabilities are granted to the process via the service file definition
+## Capabilities
 
-    dog.service
-    ```bash
+Originally dog_agent used sudo rights.  To better limit what rights dog_agent has,
+Linux [capabilities](https://blog.container-solutions.com/linux-capabilities-why-they-exist-and-how-they-work)
+are used instead.  For systems with systemd, those capabilities are granted to
+the process via the service file definition
+
+dog.service
+
+```bash
     ...
     [Service]
         CapabilityBoundingSet=CAP_DAC_READ_SEARCH CAP_NET_ADMIN CAP_NET_RAW
         AmbientCapabilities=CAP_DAC_READ_SEARCH CAP_NET_ADMIN CAP_NET_RAW
     ...
-    ```
-    For systems without systemd, those capabilities are granted to special binaries available only to the dog user.
-    ```bash
+```
+
+For systems without systemd, those capabilities are granted to special binaries
+available only to the dog user.
+
+```bash
     $ getcap /home/dog/bin/*
     ip6tables-restore = cap_dac_read_search,cap_net_admin,cap_net_raw+ep
     ip6tables-save = cap_dac_read_search,cap_net_admin,cap_net_raw+ep
     ipset = cap_net_admin,cap_net_raw+ep
     iptables-restore = cap_dac_read_search,cap_net_admin,cap_net_raw+ep
     iptables-save = cap_dac_read_search,cap_net_admin,cap_net_raw+ep
-    ```
+```
 
-    Both systemd and systemd-less systems use the /home/bin/dog/* binaries, but the systemd system doesn't have file based capabilities set.
+Both systemd and systemd-less systems use the /home/bin/dog/\* binaries, but the
+systemd system doesn't have file based capabilities set.
 
-- Configuration is stored in a file called sys.config, which is located in /opt/dog/releases/$VERSION/ 
+## Config file
 
-  example sys.config, annotated:
+Configuration is stored in a file called sys.config, which is located in
+/opt/dog/releases/$VERSION/
+
+example sys.config, annotated:
 
 ```bash
     [
