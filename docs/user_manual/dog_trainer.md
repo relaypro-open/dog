@@ -11,22 +11,34 @@ Components:
 - [RethinkDB](#rethinkdb), a NoSQL database that store's dog's state.
 - [RabbitMQ](#rabbitmq). All communication between dog_trainers and dog_agents goes through RabbitMQ queues.
 
-# dog_trainer
+# erlang application
 
 dog_trainer is deployed as an Erlang release, which is a way to combine the application and all of the Erlang language
 components needed.
 
-- Start: `sudo systemctl start dog_trainer`
+## Start
 
-- Stop: `sudo systemctl stop dog_trainer`
+`sudo systemctl start dog_trainer`
 
-- Log location: `/var/log/dog_trainer`
+## Stop
 
-- Temp file location: `/tmp/dog_trainer`
+`sudo systemctl stop dog_trainer`
 
-- Useful shell commands [Commands](dog_trainer-shell.md)
+## Log location
 
-- Configuration is stored in a file called sys.config, which is located in /opt/dog_trainer/releases/$VERSION/ 
+`/var/log/dog_trainer`
+
+## Temp file location
+
+`/tmp/dog_trainer`
+
+## Useful shell commands
+
+   [Commands](dog_trainer-shell.md)
+
+## Configuration
+
+   Configuration is stored in a file called sys.config, which is located in /opt/dog_trainer/releases/$VERSION/ 
 
   example sys.config annotated:
 
@@ -120,7 +132,41 @@ components needed.
 ].
 ```
 
-- Erlang console: `/opt/dog/dog_trainer remote_console`
+## Ports (tcp)
+
+- dog_trainer:
+  - 7070: API
+  - 8085: imetrics
+- rethinkdb:
+  - 8080: admin console
+  - 29105: intracluster
+  - 28015: client driver connections
+- rabbitmq:
+  - 4369: epmd, a peer discovery service used by RabbitMQ nodes and CLI tools
+  - 5673: AMQP with TLS
+  - 15672: management UI
+
+# imetrics
+
+dog_trainer uses the imeterics library to expose metrics:
+
+```bash
+    $ curl http://localhost:8085/imetrics/varz/counters
+ips_update keepalive:6
+```
+
+```bash
+    $ curl http://localhost:8085/imetrics/varz/gauges
+publish_queue_length 0
+interval_since_last_agent_update 1
+hash_failures hash4_iptables:0 hash6_iptables:0 hash4_ipsets:0 hash6_ipsets:0 ipset_hash:0
+no_agent_updates_received 0
+host_keepalive retirement:0 failure:0 recovery:0
+```
+
+## Erlang console
+
+`/opt/dog/dog_trainer remote_console`
 
     Useful commands:
     - [observer_cli](https://github.com/zhongwencool/observer_cli):start()
@@ -133,11 +179,13 @@ dog_trainer not only queries and updates the db, it also extensively uses Rethin
 
 You can use the RethinkDB data explorer to query the database.
 
-Useful DB queries: [DB Queries](dog_trainer-common_reql.md)
+## Useful DB queries: [DB Queries](dog_trainer-common_reql.md)
 
 ![RethinkDB Data Explorer](images/rethinkdb-data_explorer.png)
 
-- console: http://$HOSTNAME:8080/
+## console
+
+http://$HOSTNAME:8080/
 
 # rabbitmq
 
@@ -152,4 +200,6 @@ Each dog_agent also creates one config.$HOSTKEKEY\
 
 One can disconnect an agent, forcing it to reconnect.  This can fix dog_agent connectivity issues.
 
-- console: http://$HOSTNAME:15672/
+## console
+
+http://$HOSTNAME:15672/

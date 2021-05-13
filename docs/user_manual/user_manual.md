@@ -91,15 +91,38 @@ An example of a Host with a Flan Scan discovered CVE.
 
 ## External Links
 
-Links share Groups, Zones and Host addresses between dog_trainers, but not Profiles.
+Links are the way to federate multiple dog_trainer instances.  
+
+Linked dog_trainers share Groups, Zones and Host addresses between dog_trainers, but not Profiles.
 
 This is useful for sharing access between servers managed by different business units.
 
 ![Links](images/dog_park-links.png)
 
-Link direction can be bidirectional, inbound, or outbound.
+Direction can be bidirectional, inbound, or outbound.
 
-Link address handling can combine each dog_trainer's ipsets (union), or add the links name as a prefix to the ipset names (prefix).
+- Bidirectional both sends and accepts addresses.
+- Inbound only accepts addresses.
+- Outbound only sends addresses.
+
+Address Handling can be set to either Union or Prefix.
+
+- Union combines each dog_trainer's host and zone addresses with
+the same name into the same ipset.  
+
+    simplified example: A group called "web" in the "q1" and "p1" environments that
+have a Union link will combine the addresses of all Hosts in that group into a
+single ipset called "web" both environments.
+
+    This is useful for splitting a single environment up into multiple dog_trainers,
+for example between QA and Production environments.
+
+- Prefix creates unique ipsets for each host and zone in each environemt,
+adding the the two character link prefix to the ipset names to ensure they are unique.
+
+    simplified example: A group called "web" in the "q1" and "p1" environments
+that have a Prefix link will create two ipsets in each environment, one called "q1_web"
+and the other called "p1_web".
 
 Connection information is for the other sides' RabbitMQ.
 ![Link](images/dog_park-link.png)
