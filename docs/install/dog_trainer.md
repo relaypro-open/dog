@@ -1,5 +1,5 @@
 <p align="center">
-  <img src="../images/dog-segmented-green.network-200x200.png">
+  <img src="../../images/dog-segmented-green.network-200x200.png">
 </p>
 
 <h1>dog_trainer</h1>
