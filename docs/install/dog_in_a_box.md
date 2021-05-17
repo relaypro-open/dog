@@ -35,31 +35,28 @@ localhost ports
 
 - rabbitmq [http://localhost:15672](http://localhost:15672)
 
-## Build
+## Build/Install
 
 [Vagrant](https://www.vagrantup.com) is used to create a VirtualBox VM (dog-vm-host).
 ensure your ssh-agent has the key(s) needed to access dog repos
 
-### Linux (ubuntu 20.04, 20.10 host tested)
+### MacOS Dependencies
 
-```bash
-git clone git@github.com:Phonebooth/dog.git
-
-cd dog
-
-./install_dog_in_a_box-linux.sh
-```
-
-### MacOS
+These apps must be installed before running the build:
 
 - install [Vagrant](http://vagrantup.com)
 - install [VirtualBox](http://virtualbox.org) - reboot required
 
+### Ubuntu Dependencies
+
+All Ubuntu dependencies are installed by the script.
+
+### Build
+
 ```bash
 git clone git@github.com:Phonebooth/dog.git
 
 cd dog
 
-./install_dog_in_a_box-mac.sh
+./install_dog_in_a_box.sh
 ```
-
