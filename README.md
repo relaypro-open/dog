@@ -9,6 +9,7 @@
 1. [Architecture](#architecture)
 1. [Security](#security)
 1. [Logical Elements](#logical-elements)
+1. [Quick Install](#quick-install)
 1. [Install](#install)
 1. [Use](#use)
 1. [Road Map](#road-map)
@@ -87,10 +88,14 @@ dog is your network guard dog.
 - dog's use of ipsets not only allows highly scalable, fast rulesets, it also
   keeps iptables size small enough to be auditable by a human.
 
+## Quick Install
+
+A working dog environment on containers in a local VM
+
+- [dog_in_a_box](docs/install/dog_in_a_box.md)
 
 ## Install
 
-- [dog_in_a_box](docs/install/dog_in_a_box.md)
 - [dog_trainer](docs/install/dog_trainer.md)
 - [dog_park](docs/install/dog_park.md)
 - [dog_agent](docs/install/dog_agent.md)
