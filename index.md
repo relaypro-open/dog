@@ -70,7 +70,7 @@ dog is your network guard dog.
 
 - dog Agents communicate with dog_trainer over RabbitMQ queues.
 - dog_trainer stores it's configuration in a RethinkDB database.
-- dog_park communicates with dog_park via a RESTful API, which can be used for
+- dog_park communicates with dog_trainer via a RESTful API, which can be used for
   further integrations.
 
 ## Security
