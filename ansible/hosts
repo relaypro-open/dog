@@ -9,9 +9,9 @@ dog_trainer_repo=/ansible/repos/dog_trainer
 dog_agent_repo=/ansible/repos/dog_agent
 dog_park_repo=/repos/dog_park
 BUILD_ID=local
-dog_trainer_version=feature/ipset_publish_reduction
-dog_agent_version=HEAD
-dog_park_version=HEAD
+dog_trainer_version=master
+dog_agent_version=master
+dog_park_version=master
 
 [containers:children]
 agents

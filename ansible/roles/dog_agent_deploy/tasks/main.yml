@@ -22,14 +22,52 @@
     groups: consul
     append: yes
 
+- include: Debian.yml
+  when: ansible_os_family == "Debian"
+
+- name: create /home/dog/bin
+  file:
+    dest: /home/dog/bin
+    state: directory
+    owner: dog
+    group: dog
+    mode: 0700
+
+- name: copy iptables/ipset binaries to /home/dog/bin/
+  copy:
+    src: '/sbin/{{ item }}'
+    dest: '/home/dog/bin/{{ item }}'
+    owner: dog
+    group: dog
+    mode: 0700
+    remote_src: yes
+  with_items:
+    - iptables-save
+    - iptables-restore
+    - ip6tables-save
+    - ip6tables-restore
+    - ipset
+
+- name: setcap on iptables binaries in /home/dog/bin/
+  command: 'setcap cap_dac_read_search,cap_net_admin,cap_net_raw+ep /home/dog/bin/{{ item }}'
+  with_items:
+    - iptables-save
+    - iptables-restore
+    - ip6tables-save
+    - ip6tables-restore
+  when: ansible_os_family == "RedHat"
+
+- name: setcap on ipset binary in /home/dog/bin/
+  command: 'setcap cap_net_admin,cap_net_raw+ep /home/dog/bin/{{ item }}'
+  with_items:
+    - ipset
+  when: ansible_os_family == "RedHat"
+
 - name: copy consul dog_agent service file
   copy: src=../files/dog_agent.consul.json dest=/etc/consul.d/dog.json owner=root group=root
   notify:
     - reload consul
   when: env != "box"
-
-- include: Debian.yml
-  when: ansible_os_family == "Debian"
 
 - name: common_deploy
   include_role:

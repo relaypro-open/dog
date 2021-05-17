@@ -4,7 +4,7 @@
   become: yes
 
   roles: 
-    - rabbitmq_repo
+  - rabbitmq_repo
 
   tasks:
   - name: add rabbitmq user to consul group
@@ -12,6 +12,27 @@
       name: rabbitmq
       groups: consul
       append: yes
+
+  - name: install erlang packages
+    apt:
+      pkg:
+        - erlang-base
+        - erlang-asn1
+        - erlang-crypto
+        - erlang-eldap
+        - erlang-ftp
+        - erlang-inets
+        - erlang-mnesia
+        - erlang-os-mon
+        - erlang-parsetools
+        - erlang-public-key
+        - erlang-runtime-tools
+        - erlang-snmp
+        - erlang-ssl
+        - erlang-syntax-tools
+        - erlang-tftp
+        - erlang-tools
+        - erlang-xmerl
 
   - name: rabbitmq-server install
     apt:
