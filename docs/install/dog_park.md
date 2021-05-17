@@ -4,7 +4,7 @@
 
 <h1>dog_park</h1>
 
-dog_agent is the web gui component of [dog](https://github.com/Phonebooth/dog),
+dog_agent is the web gui component of [dog](https://github.com/relaypro-open/dog),
 a centralized firewall management system.
 
 - [Runtime Dependencies](#runtime-dependencies)

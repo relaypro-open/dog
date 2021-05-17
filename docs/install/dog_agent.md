@@ -4,7 +4,7 @@
 
 <h1>dog_agent</h1>
 
-dog_agent is the client agent component of [dog](https://github.com/Phonebooth/dog),
+dog_agent is the client agent component of [dog](https://github.com/relaypro-open/dog),
 a centralized firewall management system.
 
 - [Runtime Dependencies](#runtime-dependencies)
@@ -86,7 +86,7 @@ chown dog: /tmp/erl_pipes
 
 Each agent must have it's own unique client certificate to connect to rabbitmq.
 
-Check https://github.com/Phonebooth/dog_trainer/README.md#ca-certificate-creation for steps.
+Check https://github.com/relaypro-open/dog_trainer/README.md#ca-certificate-creation for steps.
 
 ## Deploy Configuration
 

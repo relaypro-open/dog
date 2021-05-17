@@ -4,7 +4,7 @@
 
 <h1>dog_trainer</h1>
 
-dog_trainer is the central server component of [dog](https://github.com/Phonebooth/dog),
+dog_trainer is the central server component of [dog](https://github.com/relaypro-open/dog),
 a centralized firewall management system.
 
 - [Runtime Dependencies](#runtime-dependencies)
@@ -190,4 +190,4 @@ systemctl start dog_trainer
 
 ## Deploy Agents
 
-  [Agents](https://github.com/Phonebooth/dog_agent)
+  [Agents](https://github.com/relaypro-open/dog_agent)
