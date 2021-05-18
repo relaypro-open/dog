@@ -45,7 +45,7 @@ dog is your network guard dog.
 - API for external integrations.
 - Tested in production with hundreds of servers.
 - Multiple dog_trainers can be federated together to allow sharing of addresses,
-  while allowing each dog_trainer to have it's own security rules.
+  while allowing each dog_trainer to have its own security rules.
 - Integration with [Flan Scan](https://github.com/cloudflare/flan),
   a network vulnerability scanner.
 - Agents support Linux 2.6+ iptables firewalls.
@@ -56,7 +56,7 @@ dog is your network guard dog.
 - [dog_trainer](https://github.com/Phonebooth/dog_trainer) is a central server,
    used to configure and control dog agents.  
    Multiple dog_trainers can be federated together to allow sharing of agents' addresses,
-   while allowing each dog_trainer to have it's own security rules.
+   while allowing each dog_trainer to have its own security rules.
 
 - [dog agent](https://github.com/Phonebooth/dog_agent)s are deployed to all managed
    servers.  dog agents control the server's iptables firewalls.
