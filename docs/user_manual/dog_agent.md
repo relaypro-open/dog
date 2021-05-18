@@ -4,7 +4,7 @@
 
 # dog_agent
 
-dog_agent is the component of dog that runs on each server, controlling it's firewall.
+dog_agent is the component of dog that runs on each server, controlling its firewall.
 
 ## Start
 
@@ -134,7 +134,7 @@ example sys.config, annotated:
     {kernel,[{inet_dist_use_interface,{127,0,0,1}}]},
     {dog, [
         {version, ""}, # git version
-        {enforcing, true}, # whether dog applies it's rules or not.
+        {enforcing, true}, # whether dog applies its rules or not.
         {use_ipsets, true}, # whether to use ipsets version of iptables rules.
         {watch_interfaces_poll_seconds, 5}, # how often to poll interfaces for changes.
         {keepalive_poll_seconds, 60} # how often to send a keepalive message to dog_trainer.

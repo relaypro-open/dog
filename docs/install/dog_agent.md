@@ -84,7 +84,7 @@ chown dog: /tmp/erl_pipes
 
 ## Certificate Creation
 
-Each agent must have it's own unique client certificate to connect to rabbitmq.
+Each agent must have its own unique client certificate to connect to rabbitmq.
 
 Check https://github.com/relaypro-open/dog_trainer/README.md#ca-certificate-creation for steps.
 

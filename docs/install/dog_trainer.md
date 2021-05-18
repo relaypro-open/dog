@@ -133,7 +133,7 @@ It's useful to create service names for the dog_trainer clients to connect to.
 You may want to create one for each type of connection:
 
 - rabbitmq clients: To force rabbitmq connections over private networks in EC2,
-create this service name as a A Record with the private IP of your server as it's
+create this service name as a A Record with the private IP of your server as its
 value.
 - dog_park (gui) clients
 
