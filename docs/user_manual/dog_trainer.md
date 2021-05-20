@@ -175,7 +175,8 @@ host_keepalive retirement:0 failure:0 recovery:0
 
 RethinkDB is a NoSQL database used to store dog_trainer's state.\
 
-dog_trainer not only queries and updates the db, it also extensively uses RethinkDB's streams to trigger events.\
+dog_trainer not only queries and updates the db, it also extensively leverages RethinkDB's
+[changefeeds](https://rethinkdb.com/docs/changefeeds/javascript/) to trigger events.\
 
 You can use the RethinkDB data explorer to query the database.
 
