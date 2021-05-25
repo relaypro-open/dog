@@ -2,13 +2,12 @@
   <img src="images/dog-segmented-green.network-400x400.png">
 </p>
 
-1. [What is dog?](#what-is-dog?)
-1. [Why dog?](#why-dog?)
+1. [What is dog?](#what-is-dog)
+1. [Why dog?](#why-dog)
 1. [Features](#features)
 1. [Components](#components)
 1. [Architecture](#architecture)
 1. [Security](#security)
-1. [Logical Elements](#logical-elements)
 1. [Quick Install](#quick-install)
 1. [Install](#install)
 1. [Use](#use)
