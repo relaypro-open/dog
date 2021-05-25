@@ -10,7 +10,7 @@ a centralized firewall management system.
 - [Runtime Dependencies](#runtime-dependencies)
 - [Build Dependencies](#build-dependencies)
 - [Deploy Configuration](#deploy-configuration)
-- [Build](#build-release)
+- [Build](#build)
 - [Deploy](#deploy)
 - [Run](#run)
 

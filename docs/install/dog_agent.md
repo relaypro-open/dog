@@ -14,7 +14,6 @@ a centralized firewall management system.
 - [Deploy Configuration](#deploy-configuration)
 - [Build Release Deploy](#build-release-deploy)
 - [Deploy](#deploy)
-- [Agent Configuration](#agent-configuration)
 - [Run](#run)
 - [Logs](#logs)
 
@@ -119,10 +118,6 @@ sudo chown -R dog: /opt/dog.$VERSION
 sudo rm /opt/dog
 sudo ln -s dog.$VERSION /opt/dog
 ```
-
-## Agent Configuration
-
-```#TODO```
 
 ## Run
 

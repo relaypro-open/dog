@@ -9,7 +9,7 @@ a centralized firewall management system.
 
 - [Runtime Dependencies](#runtime-dependencies)
 - [Build Dependencies](#build-dependencies)
-- [CA/Certificate Creation](#ca-certificate-creation)
+- [CA Certificate Creation](#ca-certificate-creation)
 - [RethinkDB setup](#rethinkdb-setup)
 - [RabbitMQ setup](#rabbitmq-setup)
 - [App setup](#app-setup)
@@ -31,7 +31,7 @@ a centralized firewall management system.
 
 - erlang 22+
 
-### CA/Certificate Creation
+### CA Certificate Creation
 
 If you already have a CA and per-server certs, you can reuse them, or buy new ones
 (costly).
