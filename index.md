@@ -16,7 +16,8 @@
 ## What is dog?
 
 dog is a distributed firewall management system designed to manage hundreds+ of
-per-server firewalls.
+per-server firewalls.  Currently iptables on Linux supported, but others could
+be added.
 
 dog is your network guard dog.
 
