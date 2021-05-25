@@ -18,22 +18,6 @@ It is also the build server for the applications that are deployed to those cont
 - app-server: runs nginx, dog_agent
 - db-server: runs postgresql, dog_agent
 
-# Install
-
-- install [VirtualBox](http://virtualbox.org) - reboot required
-- create an Linux(Ubuntu) VM, import image, start VM.
-
-# Use
-
-The dog VM is configured to forward the containers' service to the physical hosts'
-localhost ports
-
-- dog [http://localhost:3000](http://localhost:3000)
-
-- rethinkdb [http://localhost:8080](http://localhost:8080)
-
-- rabbitmq [http://localhost:15672](http://localhost:15672)
-
 ## Build/Install
 
 [Vagrant](https://www.vagrantup.com) is used to create a VirtualBox VM (dog-vm-host).
@@ -58,4 +42,15 @@ git clone https://github.com/relaypro-open/dog.git
 cd dog
 
 ./install_dog_in_a_box.sh
+
+# Use
+
+The dog VM is configured to forward the containers' service to the physical hosts'
+localhost ports
+
+- dog [http://localhost:3000](http://localhost:3000)
+
+- rethinkdb [http://localhost:8080](http://localhost:8080)
+
+- rabbitmq [http://localhost:15672](http://localhost:15672)
 ```
