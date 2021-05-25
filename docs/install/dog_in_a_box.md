@@ -21,7 +21,6 @@ It is also the build server for the applications that are deployed to those cont
 # Install
 
 - install [VirtualBox](http://virtualbox.org) - reboot required
-- download a dog_in_a_box [image](http://github.com/relaypro-open/download/dog_in_a_box.vdi)
 - create an Linux(Ubuntu) VM, import image, start VM.
 
 # Use
@@ -44,8 +43,8 @@ ensure your ssh-agent has the key(s) needed to access dog repos
 
 These apps must be installed before running the build:
 
-- install [Vagrant](http://vagrantup.com)
-- install [VirtualBox](http://virtualbox.org) - reboot required
+- install [Vagrant](https://www.vagrantup.com/)
+- install [VirtualBox](https://www.virtualbox.org/) - reboot required
 
 ### Ubuntu Dependencies
 

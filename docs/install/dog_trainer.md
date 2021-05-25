@@ -10,14 +10,13 @@ a centralized firewall management system.
 - [Runtime Dependencies](#runtime-dependencies)
 - [Build Dependencies](#build-dependencies)
 - [CA/Certificate Creation](#ca-certificate-creation)
-- [Initial Configuration](#initial-configuration)
-  - [RethinkDB setup](#rethinkdb-setup)
-  - [RabbitMQ setup](#rabbitmq-setup)
-  - [App setup](#app-setup)
-- [Build Deploy](#build-deploy)
+- [RethinkDB setup](#rethinkdb-setup)
+- [RabbitMQ setup](#rabbitmq-setup)
+- [App setup](#app-setup)
+- [Build Release Deploy](#build-release-deploy)
 - [Run](#run)
 - [Logs](#logs)
-- [Other](#other)
+- [Deploy Agents](#deploy-agents)
 
 ## Runtime Dependencies
 

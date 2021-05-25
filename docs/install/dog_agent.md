@@ -12,7 +12,7 @@ a centralized firewall management system.
 - [Build Dependencies](#build-dependencies)
 - [Certificate Creation](#certificate-creation)
 - [Deploy Configuration](#deploy-configuration)
-- [Build Release](#build-release)
+- [Build Release Deploy](#build-release-deploy)
 - [Deploy](#deploy)
 - [Agent Configuration](#agent-configuration)
 - [Run](#run)

@@ -8,7 +8,6 @@ dog_agent is the web gui component of [dog](https://github.com/relaypro-open/dog
 a centralized firewall management system.
 
 - [Runtime Dependencies](#runtime-dependencies)
-- [Runtime Dependencies Setup](#runtime-dependencies-setup)
 - [Build Dependencies](#build-dependencies)
 - [Deploy Configuration](#deploy-configuration)
 - [Build](#build-release)
@@ -61,7 +60,7 @@ tar cd dog_park.tgz *
 
 Copy tar to web server system, extract to web root
 
-## Sample Nginx Configuration
+### Sample Nginx Configuration
 
 - Protect with an authentication proxy: [oauth2-proxy](https://oauth2-proxy.github.io/oauth2-proxy/)
 - Configure your web server to proxy /api to dog_trainer at [http://localhost:7070/api/](http://localhost:7070/api/)
