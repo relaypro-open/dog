@@ -53,15 +53,15 @@ dog is your network guard dog.
 
 ## Components
 
-- [dog_trainer](https://github.com/Phonebooth/dog_trainer) is a central server,
+- [dog_trainer](https://github.com/relaypro-open/dog_trainer) is a central server,
    used to configure and control dog agents.  
    Multiple dog_trainers can be federated together to allow sharing of agents' addresses,
    while allowing each dog_trainer to have its own security rules.
 
-- [dog agent](https://github.com/Phonebooth/dog_agent)s are deployed to all managed
+- [dog agent](https://github.com/relaypro-open/dog_agent)s are deployed to all managed
    servers.  dog agents control the server's iptables firewalls.
 
-- [dog_park](https://bitbucket.org/republicwireless/dog_park/src/master/) is the
+- [dog_park](https://github.com/relaypro-open/dog_park) is the
    browser user interface for dog_trainer.
 
 ## Architecture

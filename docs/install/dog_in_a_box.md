@@ -54,7 +54,7 @@ All Ubuntu dependencies are installed by the script.
 ### Build
 
 ```bash
-git clone git@github.com:Phonebooth/dog.git
+git clone https://github.com/relaypro-open/dog.git
 
 cd dog
 
