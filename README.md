@@ -21,7 +21,7 @@ be added.
 
 dog is your network guard dog.
 
-'dog_fw' is the search friendly name for dog.
+'dog-fw' is the search friendly name for dog.
 
 ## Why dog?
 
