@@ -46,7 +46,7 @@
 
 - name: clone dog_park repo
   git:
-    repo: git@bitbucket.org:republicwireless/dog_park.git
+    repo: https://github.com/relaypro-open/dog_park
     dest: "{{ dog_park_repo }}"
     version: "{{ dog_park_version }}"
     accept_hostkey: yes

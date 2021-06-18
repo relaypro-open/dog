@@ -36,7 +36,7 @@
 
 - name: clone dog_trainer repo
   git:
-    repo: git@github.com:Phonebooth/dog_trainer.git
+    repo: git@github.com:relaypro-open/dog_trainer.git
     dest: "{{ dog_trainer_repo }}"
     version: "{{ dog_trainer_version }}"
     accept_hostkey: yes
