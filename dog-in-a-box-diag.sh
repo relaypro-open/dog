@@ -1,10 +1,12 @@
-#!/bin/bash
+#!/bin/bash -x
+vagrant global-status | grep dog-vm-host
+vagrant port dog-vm-host
 sudo ss -plnt
-ssh dog-vm-host "
-    hostname;\
-    lxc list;\
-    ps -ef | grep rabbit | grep -v grep; \
-    ps -ef | grep dog_trainer | grep -v grep; \
-    ps -ef | grep dog/ | grep -v grep; \
-    ps -ef | grep rethinkdb | grep -v grep; \
-    sudo ss -lnpt"
+ssh dog-vm-host "hostname;"
+ssh dog-vm-host "lsb_release -a;"
+ssh dog-vm-host "lxc list;"
+ssh dog-vm-host "ps -ef | grep rabbit | grep -v grep;"
+ssh dog-vm-host "ps -ef | grep dog_trainer | grep -v grep;"
+ssh dog-vm-host "ps -ef | grep dog/ | grep -v grep;"
+ssh dog-vm-host "ps -ef | grep rethinkdb | grep -v grep;"
+ssh dog-vm-host "sudo ss -lnpt"
