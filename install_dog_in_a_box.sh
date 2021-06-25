@@ -1,4 +1,6 @@
 #!/bin/bash
+set -euo pipefail
+
 osType=$(uname)
 case "$osType" in
         "Darwin")

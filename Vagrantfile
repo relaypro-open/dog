@@ -3,9 +3,8 @@
 
 $script = <<-'SCRIPT'
 #!/bin/bash
+set -euo pipefail
 whoami
-#add vagrant key to ssh-agent
-ssh-add .vagrant/machines/dog-vm-host/virtualbox/private_key
 
 echo $PATH
 
@@ -16,7 +15,7 @@ adduser vagrant lxd
 
 #lxc image import /ansible/lxd/ubuntu-20.04-server-cloudimg-amd64-lxd.tar.xz /ansible/lxd/ubuntu-20.04-server-cloudimg-amd64.squashfs --alias ubuntu-20.04
 
-lxc launch ubuntu:20.04 app-server #duplicated on purpose, workaround for libvirt/kvm/vagrant/image? bug
+lxc launch ubuntu:20.04 app-server || true #duplicated on purpose, workaround for libvirt/kvm/vagrant/image? bug, ignoring error
 lxc launch ubuntu:20.04 app-server #duplicated on purpose, workaround for libvirt/kvm/vagrant/image? bug
 lxc config set app-server raw.idmap 'both 1000 1000'
 lxc config device add app-server sitedir disk source=/home/vagrant path=/opt/home
