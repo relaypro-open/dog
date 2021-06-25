@@ -25,6 +25,9 @@ ensure your ssh-agent has the key(s) needed to access dog repos
 
 You must have ssh-agent running on your host machine: [ssh-agent](https://www.ssh.com/academy/ssh/agent)
 
+One a Core i7 7thGen Laptop and a fast internet connection, this build took 35
+minutes to build.
+
 ### MacOS Dependencies
 
 These apps must be installed before running the build:
