@@ -1,6 +1,11 @@
 ---
-- name: Ensure APT official nginx key
-  apt_key: url=http://nginx.org/keys/nginx_signing.key
+- name: get APT official nginx key
+  command: curl http://nginx.org/keys/nginx_signing.key -o /tmp/nginx_signing.key
+  tags: [packages,nginx]
+  when: ansible_os_family == 'Debian'
+
+- name: add APT official nginx key
+  command: apt-key add /tmp/nginx_signing.key
   tags: [packages,nginx]
   when: ansible_os_family == 'Debian'
 
