@@ -10,20 +10,6 @@
     build_env: 'dev'
     when: env is search("dev")
 
-#manually checkout git repos until we create a public repo
-#onto dog-vm-host/ansible/repos 
-#ssh-kegen -p to create ~/.ssh/id_rsa w/no passphrase
-#git git@bitbucket.org:republicwireless/jwt.git to add github key to known hosts for rebar3 checkout
-#
-#- name: copy dog_agent repo
-#  copy:
-#    src: /ansible/repos/dog_agent/
-#    dest: /tmp/dog_agent/
-#- name: github key
-#  command: ssh git@github.com
-#
-#- name: bitbucket key
-#  command: ssh git@bitbucket.org
 - name: create repos dir
   become: yes
   file:
