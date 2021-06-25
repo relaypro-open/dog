@@ -9,8 +9,11 @@
     name: gnupg 
     state: present
 
-- name: install repo key
-  shell: apt-key adv --keyserver "hkps://keys.openpgp.org" --recv-keys "0x0A9AF2115F4687BD29803A206B73A36E6026DFCA"
+- name: download rabbitmq signing key
+  command: curl -L https://github.com/rabbitmq/signing-keys/releases/download/2.0/rabbitmq-release-signing-key.asc --output /tmp/rabbitmq-release-signing-key.asc
+
+- name: import rabbitmq signing skey
+  command: gpg --import /tmp/rabbitmq-release-signing-key.asc
 
 ## Cloudsmith: modern Erlang repository
 - name: install erlang apt repo key
