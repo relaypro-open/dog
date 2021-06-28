@@ -53,7 +53,8 @@ vagrant up
 
 vagrant ssh-config | tee -a ~/.ssh/config
 
-ssh-add .vagrant/machines/dog-vm-host/virtualbox/private_key
+scp .vagrant/machines/dog-vm-host/virtualbox/private_key vagrant@dog-vm-host:.ssh/id_rsa
+
 
 echo "provisioning script completed."
 
