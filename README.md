@@ -123,3 +123,6 @@ A working dog environment on containers in a local VM
     - [x] AWS EC2
     - [ ] Google Cloud
     - [ ] Microsoft Azure
+- Support local Virtualization firewall rules
+    - [x] lxd
+    - [x] docker
