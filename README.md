@@ -52,6 +52,9 @@ dog is your network guard dog.
   a network vulnerability scanner.
 - Agents support Linux 2.6+ iptables firewalls.
 - Supports cloud public IP addresses (currently only EC2).
+- Manages cloud security groups across multiple regions (EC2).
+- Compatible with Docker, LXD localhost firewall rules.
+- Can be managed as code by terraform (https://github.com/relaypro-open/terraform-provider-dog)
 
 ## Components
 
@@ -107,22 +110,19 @@ A working dog environment on containers in a local VM
 - [user_manual](docs/user_manual/user_manual.md)
 
 ## Road Map
-- [ ] Version and document the API
-- Agent support for
-    - More Linux distros
-        - [ ] Arch
-    - Other \*nix OSes
-        - [ ] BSD
-- Support for other firewall types
-    - [ ] nftables (beyond iptables-legacy compatibility support)
+
 - Manage Cloud security groups
-    - [ ] AWS EC2
+    - [x] AWS EC2
     - [ ] Google Cloud
     - [ ] Microsoft Azure
 - Support Cloud Instances
     - [x] AWS EC2
     - [ ] Google Cloud
     - [ ] Microsoft Azure
-- Support local Virtualization firewall rules
-    - [x] lxd
-    - [x] docker
+- Agent support for
+    - More Linux distros
+        - [ ] Arch
+    - Other \*nix OSes
+        - [ ] BSD
+- Support for other firewall types
+    - [ ] nftables (beyond the current iptables-legacy compatibility support)
