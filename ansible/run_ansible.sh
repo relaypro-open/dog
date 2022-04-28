@@ -4,7 +4,6 @@ set -euo pipefail
 echo "whoami: $(whoami)"
 echo "groups: $(groups)"
 echo "PATH: $PATH"
-echo "SSH_AUTH_SOCK: $SSH_AUTH_SOCK"
 date +%s | sha256sum | base64 | head -c 32 > /ansible/ca_passphrase.txt
 
 sudo sed -i '/.*\w*dog-server$/d' /etc/hosts
