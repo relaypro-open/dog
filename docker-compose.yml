@@ -1,0 +1,50 @@
+version: "3.9"
+services:
+  dog_agent:
+    build: "./dog_agent"
+    ports:
+      - "2222:2222"
+    depends_on:
+      - "dog_trainer"
+      - "rabbitmq"
+    cap_add:
+      - NET_ADMIN
+    environment:
+      - SHELL=/bin/sh
+  nginx-proxy:
+    image: jwilder/nginx-proxy
+    ports:
+      - "80:80"
+    volumes:
+      - /var/run/docker.sock:/tmp/docker.sock:ro
+  dog_park:
+    build: "./dog_park"
+    ports:
+      - "3030:3030"
+    environment:
+      - NGINX_PORT=3030
+      - REACT_APP_DOG_API_HOST=http://dog
+      - VIRTUAL_HOST=dog
+      - VIRTUAL_PATH=/
+    depends_on:
+      - "dog_trainer"
+  dog_trainer:
+    build: ./dog_trainer
+    ports:
+      - "7070:7070"
+    environment:
+      - VIRTUAL_HOST=dog
+      - VIRTUAL_PATH=/api
+    depends_on:
+      - "rethinkdb"
+      - "rabbitmq"
+  rethinkdb:
+    image: "rethinkdb"
+    ports:
+      - "8080:8080"
+  rabbitmq:
+    image: "rabbitmq:management"
+    environment:
+      - RABBITMQ_DEFAULT_VHOST=dog
+    ports:
+      - "15672:15672"
