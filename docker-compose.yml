@@ -1,6 +1,7 @@
 version: "3.9"
 services:
   dog_agent:
+    container_name: "dog_agent"
     build: "./dog_agent"
     ports:
       - "2222:2222"
@@ -12,12 +13,16 @@ services:
     environment:
       - SHELL=/bin/sh
   nginx-proxy:
+    container_name: "dog_nginx_proxy"
     image: jwilder/nginx-proxy
     ports:
       - "80:80"
     volumes:
       - /var/run/docker.sock:/tmp/docker.sock:ro
+    environment:
+      - DEFAULT_HOST=dog
   dog_park:
+    container_name: "dog_park"
     build: "./dog_park"
     ports:
       - "3030:3030"
@@ -29,6 +34,7 @@ services:
     depends_on:
       - "dog_trainer"
   dog_trainer:
+    container_name: "dog_trainer"
     build: ./dog_trainer
     ports:
       - "7070:7070"
@@ -39,10 +45,12 @@ services:
       - "rethinkdb"
       - "rabbitmq"
   rethinkdb:
+    container_name: "rethinkdb"
     image: "rethinkdb"
     ports:
       - "8080:8080"
   rabbitmq:
+    container_name: "rabbitmq"
     image: "rabbitmq:management"
     environment:
       - RABBITMQ_DEFAULT_VHOST=dog
