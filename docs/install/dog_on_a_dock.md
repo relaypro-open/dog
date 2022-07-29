@@ -27,7 +27,9 @@ If you are OK with what the License requires, you can use Docker Desktop
 There are multiple ways to install the Open Source versions of Docker/Compose
 
 [MacOS Brew](https://formulae.brew.sh/formula/docker-compose)
+
 [Ubuntu Linux](https://www.theserverside.com/blog/Coffee-Talk-Java-News-Stories-and-Opinions/How-to-install-Docker-and-docker-compose-on-Ubuntu)
+
 [Arch Linux](https://wiki.archlinux.org/title/docker#Docker_Compose)
 
 ### Build
@@ -60,14 +62,18 @@ c63a16687fec   jwilder/nginx-proxy   "/app/docker-entrypo…"   3 days ago     U
 ## dog alias
 You must create an alias for localhost called 'dog' for the dog_park gui to work
 
-/etc/hosts:
+edit hosts file, add 'dog':
+```
 127.0.0.1	localhost dog
+```
+
+[Windows HOWTO](https://www.nublue.co.uk/guides/edit-hosts-file/)
 
 ## Web consoles
 Docker is configured to forward the containers' service to the physical hosts'
 localhost ports
 
-- dog_park gui [http://dog:80](http://dog:80)
+- dog_park [http://dog:80](http://dog:80)
 
 - rethinkdb [http://localhost:8080](http://localhost:8080)
 
@@ -75,15 +81,18 @@ localhost ports
 
 ## Agent Test
 
-1) Go to the dog_park gui: http://dog.
-2) Create a Service called 'ssh' with TCP port 22.
-3) Create a Profile called 'dog_test" with a rule allowing 'All' to 'ALLOW' the service 'ssh'.
-4) Create a Group called 'local_group' (This is the default group in the Docker configuration).
-5) Ensure the Host 'docker-node-123' is in the Group 'local_group' (The default name of the agent in the Docker configuration).
+- Go to the dog_park GUI: http://dog.
+- Create a Service called 'ssh' with TCP port 22.
+- Create a Profile called 'dog_test" with a rule allowing 'All' to 'ALLOW' the service 'ssh'.
+- Create a Group called 'local_group' (This is the default group in the Docker configuration).
+- Ensure the Host 'docker-node-123' is in the Group 'local_group' (The default name of the agent in the Docker configuration).
 
 ### Check agent iptables and ipsets
 
-`docker exec -t -i dog_agent "/usr/sbin/iptables-save"`
+```
+docker exec -t -i dog_agent "/usr/sbin/iptables-save"
+```
+
 should return something like:
 
 ```
@@ -108,19 +117,14 @@ COMMIT
 COMMIT
 ```
 
-`docker exec -t -i dog_agent "bash"
-`> /sbin/ipset save`
+```
+docker exec -t -i dog_agent "bash"
+> /sbin/ipset save
+```
 
 should output something like:
 
 ```
-create all-active_gv4 hash:net family inet hashsize 1024 maxelem 65536
-add all-active_gv4 172.25.0.7
-create local_group_gv4 hash:net family inet hashsize 1024 maxelem 65536
-add local_group_gv4 172.25.0.7
-create all-active_gv6 hash:net family inet6 hashsize 1024 maxelem 65536
-create local_group_gv6 hash:net family inet6 hashsize 1024 maxelem 65536
-root@7fdbde882a5c:/data# bash -c '/sbin/ipset save'
 create all-active_gv4 hash:net family inet hashsize 1024 maxelem 65536
 add all-active_gv4 172.25.0.7
 create local_group_gv4 hash:net family inet hashsize 1024 maxelem 65536
