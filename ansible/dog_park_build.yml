@@ -1,8 +1,0 @@
----
-- hosts: localhost
-  vars:
-    app: dog_park 
-    app_owner: dog 
-
-  roles:
-    - dog_park_build

@@ -1,4 +1,0 @@
----
-- hosts: agents
-  roles:
-    - { role: dog_agent_deploy, when: env == 'box' }

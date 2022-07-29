@@ -1,5 +1,0 @@
-[phonebooth-distro-updates]
-name=phonebooth-distro-updates
-baseurl=http://yum.republicdev.info:9090/repo/$releasever/
-enabled=1
-gpgcheck=0

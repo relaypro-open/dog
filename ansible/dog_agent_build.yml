@@ -1,4 +1,0 @@
----
-- hosts: localhost
-  roles:
-    - { role: dog_agent_build, when: env == 'box' }

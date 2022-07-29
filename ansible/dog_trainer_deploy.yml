@@ -1,4 +1,0 @@
----
-- hosts: dog-server
-  roles:
-    - { role: dog_trainer_deploy, when: env == 'box' }

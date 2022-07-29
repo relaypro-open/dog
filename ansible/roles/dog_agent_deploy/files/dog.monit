@@ -1,4 +1,0 @@
-check process dog with pidfile /var/run/dog/dog.pid
-  start program = "/etc/init.d/dog start" as uid dog and gid dog
-    with timeout 30 seconds
-  stop program = "/etc/init.d/dog stop" as uid dog and gid dog
