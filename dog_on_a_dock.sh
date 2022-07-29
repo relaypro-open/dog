@@ -18,3 +18,5 @@ cd ..
 
 docker compose build
 docker compose up
+
+docker container ls

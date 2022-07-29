@@ -97,7 +97,7 @@ dog is your network guard dog.
 
 A working dog environment on containers in a local VM
 
-- [dog_in_a_box](docs/install/dog_in_a_box.md)
+- [dog_on_a_dock](docs/install/dog_on_a_dock.md)
 
 ## Install
 
