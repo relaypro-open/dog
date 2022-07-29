@@ -10,28 +10,25 @@ It's meant to provide a way to test changes to dog in a full environment built
 from scratch, as well as a way to easily try out dog.
 
 ---
-  
-
-- dog-server: hosts dog_trainer, dog_park, rethinkdb, and rabbitmq
-- app-server: runs nginx, dog_agent
-- db-server: runs postgresql, dog_agent
 
 ## Build/Install
 
 [Docker Compose](https://github.com/docker/compose) is used to create multiple Docker containers.
 
-One a Core i7 7thGen Laptop and a fast internet connection, this build took 35
-minutes to build.
 
-### MacOS/Windows/Linux Dependencies
+### Licensed Dependencies
 
-If you are OK with the License requires, you can use Docker Desktop
+If you are OK with what the License requires, you can use Docker Desktop
 
-- install [Docker Desktop](https://www.docker.com/products/docker-desktop/)
+- Install [Docker Desktop](https://www.docker.com/products/docker-desktop/)
 
 ### Open Source Dependencies
 
-There are multiple ways to install the OS versions of Docker/Compose
+There are multiple ways to install the Open Source versions of Docker/Compose
+
+[MacOS Brew](https://formulae.brew.sh/formula/docker-compose)
+[Ubuntu Linux](https://www.theserverside.com/blog/Coffee-Talk-Java-News-Stories-and-Opinions/How-to-install-Docker-and-docker-compose-on-Ubuntu)
+[Arch Linux](https://wiki.archlinux.org/title/docker#Docker_Compose)
 
 ### Build
 
