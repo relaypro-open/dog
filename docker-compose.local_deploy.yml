@@ -1,0 +1,70 @@
+version: "3.9"
+services:
+  csc:
+    container_name: "csc"
+    build:
+      context: "./csc"
+    command: lambda_function.lambda_handler
+    volumes:
+      - ./csc_task:/var/task
+  dog_agent:
+    container_name: "dog-agent"
+    build: 
+      context: "./dog_agent"
+      dockerfile: Dockerfile.local_deploy
+    depends_on:
+      - "csc"
+      - "dog_trainer"
+      - "rabbitmq"
+    cap_add:
+      - NET_ADMIN
+    environment:
+      - SHELL=/bin/sh
+    volumes:
+      - ./dog_agent_home:/root
+  nginx-proxy:
+    container_name: "dog-nginx-proxy"
+    image: jwilder/nginx-proxy
+    ports:
+      - "80:80"
+    volumes:
+      - /var/run/docker.sock:/tmp/docker.sock:ro
+    environment:
+      - DEFAULT_HOST=dog
+  dog_park:
+    container_name: "dog-park"
+    build: "./dog_park"
+    environment:
+      - NGINX_PORT=3030
+      - REACT_APP_DOG_API_HOST=http://dog
+      - VIRTUAL_HOST=dog
+      - VIRTUAL_PATH=/
+    depends_on:
+      - "dog_trainer"
+  dog_trainer:
+    container_name: "dog-trainer"
+    build: ./dog_trainer
+    environment:
+      - VIRTUAL_HOST=dog
+      - VIRTUAL_PATH=/api
+    depends_on:
+      - "csc"
+      - "rethinkdb"
+      - "rabbitmq"
+    volumes:
+      - ./dog_trainer_home:/root
+  rethinkdb:
+    container_name: "rethinkdb"
+    image: "rethinkdb"
+    ports:
+      - "8080:8080"
+  rabbitmq:
+    container_name: "rabbitmq"
+    build: ./rabbitmq
+      #image: "rabbitmq:management"
+    environment:
+      - RABBITMQ_DEFAULT_VHOST=dog
+    ports:
+      - "15672:15672"
+    depends_on:
+      - "csc"

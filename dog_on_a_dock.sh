@@ -16,7 +16,12 @@ cd dog_park
 git pull
 cd ..
 
-docker compose build
-docker compose up
+git clone https://github.com/relaypro-open/csc.git
+cd csc
+git pull
+cd ..
+
+docker-compose -f docker-compose.local_deploy.yml build
+docker-compose -f docker-compose.local_deploy.yml up
 
 docker container ls
