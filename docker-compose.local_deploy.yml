@@ -4,9 +4,15 @@ services:
     container_name: "csc"
     build:
       context: "./csc"
-    command: lambda_function.lambda_handler
-    volumes:
-      - ./csc_task:/var/task
+    environment:
+      - NGINX_PORT=8000
+      - VIRTUAL_HOST=dog
+      - VIRTUAL_PATH=/csc
+      - PORT=8000
+    ports:
+     - "8000:8000"
+        #volumes:
+        #  - ./csc_tmp:/tmp
   dog_agent:
     container_name: "dog-agent"
     build: 
@@ -43,7 +49,9 @@ services:
       - "dog_trainer"
   dog_trainer:
     container_name: "dog-trainer"
-    build: ./dog_trainer
+    build: 
+      context: "./dog_trainer"
+      dockerfile: Dockerfile.local_deploy
     environment:
       - VIRTUAL_HOST=dog
       - VIRTUAL_PATH=/api
