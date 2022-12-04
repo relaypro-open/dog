@@ -136,9 +136,15 @@ create local_group_gv6 hash:net family inet6 hashsize 1024 maxelem 65536
 
 ## Additional dog_agents
 You can attach external dog_agents to the dog_on_on_a_dock.
-1. Request a passkey from csc (local CA signed cert).  This passkey can only be used once, and will expire if not used in 5 minutes of being created.
-2. Request certificates and host_key with the passkey.
-3. Add the hostkey obtained to /etc/dog/config.json
+
+1. Download latest release in tar.gz format, and extract to /opt/dog/.  Releases are built for Ubuntu 20.x, but will proabaly work in similar Linux distros.
+https://github.com/relaypro-open/dog_agent/releases
+
+2. Request a passkey from csc (local CA signed cert).  This passkey can only be used once, and will expire if not used in 5 minutes of being created.
+
+3. Request certificates and host_key with the passkey.
+
+4. Add the hostkey obtained to /etc/dog/config.json
 
 Here is an example script that could be run on a dog_agent instance:
 ```
@@ -151,3 +157,133 @@ echo $certs | jq -r .ca_crt >     /etc/dog/certs/ca.crt
 echo $certs | jq -r .hostkey >>   /etc/dog/dog.config #(will need to edit this file to put hostkey into json format)
 ```
 NOTE: NOT FOR USE IN PRODUCTION!  csc is a simple, but insecure way to create CA signed certificates, to allow you to try out dog on some test servers in your environment.  Production systems will require more strict control of the CA itself, and encrypted transfer of the certificates.  
+
+5. Create /etc/dog/config.json, using hotkey from above.
+```
+{"environment":"*","group":"local_group","hostkey":"$HOSTKEY","location":"*"}
+```
+
+6. Create /etc/dog/dog.config:
+```
+[
+    {dog, [
+        {version, "local_docker"},
+        {enforcing, true},
+        {use_ipsets, true}
+    ]},
+    {kernel,[
+     {inet_dist_use_interface,{127,0,0,1}},
+      {logger_level, all},
+      {logger, [
+  
+        {handler, default, logger_std_h,
+        #{
+          level => error,
+          formatter => {flatlog,
+                          #{max_depth => 3,
+                            term_depth => 50,
+                            colored => true
+        }}}},
+        {handler, disk_log_debug, logger_disk_log_h,
+          #{config => #{
+                file => "/var/log/dog/debug.log",
+                type => wrap,
+                max_no_files => 5,
+                max_no_bytes => 10000000
+            },
+            level => debug,
+            formatter => {flatlog, #{
+              map_depth => 3,
+              term_depth => 50
+            }}
+          }
+        },
+
+        %%% Disk logger for errors
+        {
+          handler, disk_log_error, logger_disk_log_h,
+          #{config => #{
+                file => "/var/log/dog/error.log",
+                type => wrap,
+                max_no_files => 5,
+                max_no_bytes => 10000000
+            },
+            level => error,
+            formatter => {
+              flatlog, #{
+                map_depth => 3,
+                term_depth => 50
+              }
+            }
+          }
+        }
+    ]
+
+    }]},
+    {turtle, [
+        {connection_config, [
+            #{
+                conn_name => default,
+
+                username => "guest",
+                password => "guest",
+                virtual_host => "dog",
+                ssl_options => [
+                               {cacertfile, "/etc/dog/certs/ca.crt"},
+                               {certfile,   "/etc/dog/certs/server.crt"},
+                               {keyfile,    "/etc/dog/private/server.key"},
+                               {verify, verify_peer},
+                               {server_name_indication, disable},
+                               {fail_if_no_peer_cert, true}
+                              ],
+                deadline => 300000,
+                connections => [
+                    {main, [
+                      {"dog", 5673 } %Whatever hostname your clients will access dog_trainer/rabbitmq
+                    ]}
+                ]
+            }
+        ]
+    }
+    ]},
+    {erldocker, [
+        {docker_http, <<"http+unix://%2Fvar%2Frun%2Fdocker.sock">>}
+    ]},
+    {erlexec, [
+	   {debug, 0},
+	   {verbose, false},
+	   {root, true}, %% Allow running child processes as root
+	   {args, []},
+	   %{alarm, 5},  %% sec deadline for the port program to clean up child pids
+	   {user, "root"},
+	   {limit_users, ["root"]}
+  ]}
+].
+```
+
+7. Create dog.service: `sudo systemctl --force --full dog.service`
+
+```
+[Unit]
+Description=dog
+After=network-online.target
+Requires=network-online.target
+
+[Service]
+User=dog
+Group=dog
+Type=simple
+
+Environment=HOME=/opt/dog
+Environment=ERL_EPMD_PORT=4371
+ExecStart=/opt/dog/dog start
+ExecStop=/opt/dog/dog stop
+WorkingDirectory=/opt/dog
+Restart=on-failure
+RuntimeDirectory=dog
+
+[Install]
+WantedBy=multi-user.target
+```
+
+8. Start service: `sudo systemctl start dog.service`
