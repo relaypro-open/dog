@@ -48,13 +48,14 @@ cd dog
 `docker container ls` shoule output something similar to this:
 
 ```
-CONTAINER ID   IMAGE                 COMMAND                  CREATED        STATUS         PORTS                                                                                                           NAMES
-7fdbde882a5c   dog_dog_agent         "/opt/dog/bin/dog fo…"   41 hours ago   Up 6 minutes   22/tcp, 0.0.0.0:2222->2222/tcp, :::2222->2222/tcp                                                               dog_agent
-00c6fd63e024   dog_dog_park          "/docker-entrypoint.…"   2 days ago     Up 6 minutes   80/tcp, 0.0.0.0:3030->3030/tcp, :::3030->3030/tcp                                                               dog_park
-f78dfd8fd92c   dog_dog_trainer       "/opt/dog_trainer/bi…"   2 days ago     Up 6 minutes   0.0.0.0:7070->7070/tcp, :::7070->7070/tcp                                                                       dog_trainer
-5eb167636243   rabbitmq:management   "docker-entrypoint.s…"   3 days ago     Up 6 minutes   4369/tcp, 5671-5672/tcp, 15671/tcp, 15691-15692/tcp, 25672/tcp, 0.0.0.0:15672->15672/tcp, :::15672->15672/tcp   rabbitmq
-c63a16687fec   jwilder/nginx-proxy   "/app/docker-entrypo…"   3 days ago     Up 6 minutes   0.0.0.0:80->80/tcp, :::80->80/tcp                                                                               dog_nginx_proxy
-5793902c06dc   rethinkdb             "rethinkdb --bind all"   3 days ago     Up 6 minutes   28015/tcp, 0.0.0.0:8080->8080/tcp, :::8080->8080/tcp, 29015/tcp                                                 rethinkdb
+CONTAINER ID   IMAGE                 COMMAND                  CREATED          STATUS          PORTS                                                                                                                                                      NAMES
+29845d20f19b   dog_dog_agent         "/bin/sh -c '/bin/ba…"   11 minutes ago   Up 11 minutes                                                                                                                                                              dog-agent
+0f1857aaa5ab   dog_dog_park          "/docker-entrypoint.…"   30 minutes ago   Up 17 minutes   80/tcp, 3030/tcp                                                                                                                                           dog-park
+1aecc0ce60c8   dog_dog_trainer       "/bin/sh -c '/bin/ba…"   30 minutes ago   Up 17 minutes   7070/tcp                                                                                                                                                   dog-trainer
+d9ce61f80d84   dog_rabbitmq          "docker-entrypoint.s…"   30 minutes ago   Up 18 minutes   4369/tcp, 5671-5672/tcp, 0.0.0.0:5673->5673/tcp, :::5673->5673/tcp, 15671/tcp, 15691-15692/tcp, 25672/tcp, 0.0.0.0:15672->15672/tcp, :::15672->15672/tcp   rabbitmq
+b9d82b3866af   dog_csc               "uvicorn app.main:ap…"   4 days ago       Up 17 minutes   0.0.0.0:8000->8000/tcp, :::8000->8000/tcp                                                                                                                  csc
+262fe8491815   jwilder/nginx-proxy   "/app/docker-entrypo…"   4 days ago       Up 17 minutes   0.0.0.0:80->80/tcp, :::80->80/tcp                                                                                                                          dog-nginx-proxy
+6b5c3f57b06d   rethinkdb             "rethinkdb --bind all"   2 weeks ago      Up 17 minutes   28015/tcp, 0.0.0.0:8080->8080/tcp, :::8080->8080/tcp, 29015/tcp                                                                                            rethinkdb
 ```
 
 # Use
@@ -132,3 +133,21 @@ add local_group_gv4 172.25.0.7
 create all-active_gv6 hash:net family inet6 hashsize 1024 maxelem 65536
 create local_group_gv6 hash:net family inet6 hashsize 1024 maxelem 65536
 ```
+
+## Additional dog_agents
+You can attach external dog_agents to the dog_on_on_a_dock.
+1. Request a passkey from csc (local CA signed cert).  This passkey can only be used once, and will expire if not used in 5 minutes of being created.
+2. Request certificates and host_key with the passkey.
+3. Add the hostkey obtained to /etc/dog/config.json
+
+Here is an example script that could be run on a dog_agent instance:
+```
+#!/bin/bash
+passkey=$(curl -s http://dog:8000/csc/register | jq -r .passkey)
+certs=$(curl -s -d '{"fqdn": "your_server_name.your_domain.your_tld", "passkey": "'$passkey'"}' http://dog:8000/csc/cert) #fqdn is just a unique naming scheme - you could use any name.
+echo $certs | jq -r .server_key > /etc/dog/private/server.key
+echo $certs | jq -r .server_crt > /etc/dog/certs/server.crt
+echo $certs | jq -r .ca_crt >     /etc/dog/certs/ca.crt
+echo $certs | jq -r .hostkey >>   /etc/dog/dog.config #(will need to edit this file to put hostkey into json format)
+```
+NOTE: NOT FOR USE IN PRODUCTION!  csc is a simple, but insecure way to create CA signed certificates, to allow you to try out dog on some test servers in your environment.  Production systems will require more strict control of the CA itself, and encrypted transfer of the certificates.  
