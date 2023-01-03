@@ -1,4 +1,10 @@
 #!/bin/bash
+git clone https://github.com/relaypro-open/dog_agent_ex.git
+cd dog_agent_ex
+git pull
+git checkout main
+cd ..
+
 git clone https://github.com/relaypro-open/dog_agent.git
 cd dog_agent
 git pull

@@ -13,6 +13,21 @@ services:
      - "8000:8000"
         #volumes:
         #  - ./csc_tmp:/tmp
+  dog_agent_ex:
+    container_name: "dog-agent-ex"
+    build: 
+      context: "./dog_agent_ex"
+      dockerfile: Dockerfile.local_deploy
+    depends_on:
+      - "csc"
+      - "dog_trainer"
+      - "rabbitmq"
+    cap_add:
+      - NET_ADMIN
+    environment:
+      - SHELL=/bin/sh
+    volumes:
+      - ./dog_agent_ex_home:/root
   dog_agent:
     container_name: "dog-agent"
     build: 
