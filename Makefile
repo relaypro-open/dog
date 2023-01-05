@@ -16,8 +16,14 @@ dog_trainer_rebuild:
 dog_agent_rebuild:
 	docker-compose -f docker-compose.local_deploy.yml up -d --force-recreate --no-deps --build dog_agent
 
+dog_agent_ex_rebuild:
+	docker-compose -f docker-compose.local_deploy.yml up -d --force-recreate --no-deps --build dog_agent_ex
+
 dog_park_rebuild:
 	docker-compose -f docker-compose.local_deploy.yml up -d --force-recreate --no-deps --build dog_park
+
+rabbitmq_rebuild:
+	docker-compose -f docker-compose.local_deploy.yml up -d --force-recreate --no-deps --build rabbitmq
 
 dog_trainer_console:
 	docker exec -it dog_trainer /opt/dog_trainer/bin/dog_trainer remote_console
