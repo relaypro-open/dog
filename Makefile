@@ -28,6 +28,12 @@ kong_rebuild:
 rabbitmq_rebuild:
 	docker-compose -f docker-compose.local_deploy.yml up -d --force-recreate --no-deps --build rabbitmq
 
+csc_rebuild:
+	docker-compose -f docker-compose.local_deploy.yml up -d --force-recreate --no-deps --build csc
+
+control_rebuild:
+	docker-compose -f docker-compose.local_deploy.yml up -d --force-recreate --no-deps --build control
+
 dog_trainer_console:
 	docker exec -it dog_trainer /opt/dog_trainer/bin/dog_trainer remote_console
 

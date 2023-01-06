@@ -1,5 +1,13 @@
 version: "3.9"
 services:
+  control:
+    container_name: "control"
+    build:
+      context: "./control"
+    ports:
+      - "22:22"
+    environment:
+      - DOG_API_KEY=guest
   csc:
     container_name: "csc"
     build:
