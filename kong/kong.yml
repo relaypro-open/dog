@@ -1,0 +1,25 @@
+services:
+- name: dog_trainer
+  url: http://dog-trainer:7070/
+  routes:
+  - name: dog_trainer
+    paths:
+    - /
+  plugins:
+  - name: key-auth
+    service: dog_trainer
+    config: 
+      key_names:
+      - apikey
+      key_in_body: false
+      key_in_header: true
+      key_in_query: true
+      hide_credentials: false
+      run_on_preflight: true
+
+consumers:
+- username: guest
+  custom_id: ansible-id
+  keyauth_credentials:
+  - consumer: guest
+  - key: guest

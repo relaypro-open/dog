@@ -22,6 +22,9 @@ dog_agent_ex_rebuild:
 dog_park_rebuild:
 	docker-compose -f docker-compose.local_deploy.yml up -d --force-recreate --no-deps --build dog_park
 
+kong_rebuild:
+	docker-compose -f docker-compose.local_deploy.yml up -d --force-recreate --no-deps --build kong
+
 rabbitmq_rebuild:
 	docker-compose -f docker-compose.local_deploy.yml up -d --force-recreate --no-deps --build rabbitmq
 

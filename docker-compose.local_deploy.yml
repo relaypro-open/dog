@@ -5,12 +5,12 @@ services:
     build:
       context: "./csc"
     environment:
-      - NGINX_PORT=8000
+      - NGINX_PORT=9000
       - VIRTUAL_HOST=dog
       - VIRTUAL_PATH=/csc
-      - PORT=8000
+      - PORT=9000
     ports:
-     - "8000:8000"
+     - "9000:9000"
         #volumes:
         #  - ./csc_tmp:/tmp
   dog_agent_ex:
@@ -67,15 +67,33 @@ services:
     build: 
       context: "./dog_trainer"
       dockerfile: Dockerfile.local_deploy
-    environment:
-      - VIRTUAL_HOST=dog
-      - VIRTUAL_PATH=/api
     depends_on:
       - "csc"
       - "rethinkdb"
       - "rabbitmq"
     volumes:
       - ./dog_trainer_home:/root
+  kong:
+    container_name: "kong"
+    build:
+      context: "./kong"
+      dockerfile: Dockerfile
+    environment:
+      - VIRTUAL_HOST=dog
+      - VIRTUAL_PATH=/api
+      - KONG_DATABASE=off
+      - KONG_PROXY_ACCESS_LOG=/dev/stdout
+      - KONG_ADMIN_ACCESS_LOG=/dev/stdout
+      - KONG_PROXY_ERROR_LOG=/dev/stderr
+      - KONG_ADMIN_ERROR_LOG=/dev/stderr
+      - KONG_ADMIN_LISTEN=0.0.0.0:8001, 0.0.0.0:8444 ssl
+    ports:
+      - "8000:8000"
+      - "8443:8443"
+      - "8001:8001"
+      - "8444:8444"
+    depends_on:
+      - "dog_trainer"
   rethinkdb:
     container_name: "rethinkdb"
     image: "rethinkdb"
