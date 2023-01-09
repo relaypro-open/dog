@@ -8,6 +8,9 @@ services:
       - "22:22"
     environment:
       - DOG_API_KEY=guest
+      - TF_VAR_dog_api_key_docker=guest
+    volumes:
+      - ./control_home:/root
   csc:
     container_name: "csc"
     build:
@@ -60,6 +63,9 @@ services:
       - /var/run/docker.sock:/tmp/docker.sock:ro
     environment:
       - DEFAULT_HOST=dog
+    depends_on:
+      - "kong"
+      - "dog_park"
   dog_park:
     container_name: "dog-park"
     build: "./dog_park"
@@ -95,6 +101,7 @@ services:
       - KONG_PROXY_ERROR_LOG=/dev/stderr
       - KONG_ADMIN_ERROR_LOG=/dev/stderr
       - KONG_ADMIN_LISTEN=0.0.0.0:8001, 0.0.0.0:8444 ssl
+      - KONG_DECLARATIVE_CONFIG=/kong.yml
     ports:
       - "8000:8000"
       - "8443:8443"
