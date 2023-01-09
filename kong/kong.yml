@@ -1,3 +1,6 @@
+_format_version: "2.1"
+_transform: true
+
 services:
 - name: dog_trainer
   url: http://dog-trainer:7070/

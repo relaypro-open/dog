@@ -9,11 +9,9 @@ ansible/ca_passphrase.txt
 ansible/vagrant_dot_asdf/
 ansible/vagrant_profile-d_asdf_sh
 dog_trainer
-dog_trainer_home
 dog_agent
-dog_agent_home
 dog_agent_ex
-dog_agent_ex_home
 dog_park
+*_home
 csc
 csc_tmp

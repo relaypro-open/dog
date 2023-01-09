@@ -8,4 +8,7 @@ COPY kong.yml kong.yml
 RUN chown kong:kong kong.yml
 
 USER kong
-CMD kong start && http :8001/config config=@kong.yml
+RUN which kong
+RUN which http
+#CMD /usr/local/bin/kong start && sleep 10 && /usr/bin/http :8001/config config=@kong.yml
+CMD kong start
