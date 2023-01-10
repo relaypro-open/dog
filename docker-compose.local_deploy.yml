@@ -8,9 +8,9 @@ services:
       - "22:22"
     environment:
       - DOG_API_KEY=guest
+      - DOG_API_ENDPOINT=http://kong:8000/api/V2
       - TF_VAR_dog_api_key_docker=guest
-    volumes:
-      - ./control_home:/root
+      - CACHEBUSTE=$$(date)
   csc:
     container_name: "csc"
     build:

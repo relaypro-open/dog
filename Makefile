@@ -34,6 +34,9 @@ csc_rebuild:
 control_rebuild:
 	docker-compose -f docker-compose.local_deploy.yml up -d --force-recreate --no-deps --build control
 
+control_build:
+	 docker-compose -f docker-compose.local_deploy.yml build --no-cache control
+
 dog_trainer_console:
 	docker exec -it dog_trainer /opt/dog_trainer/bin/dog_trainer remote_console
 
