@@ -1,6 +1,6 @@
 #!/bin/bash -x 
 cd /terraform/ && terraform init
-cd /terraform && dog-import docker /terraform/dog/
+cd /terraform && dog-import docker /terraform/dog/ "docker_"
 chmod u+x /terraform/dog/*.sh
 /terraform/dog/group_import.sh
 /terraform/dog/host_import.sh
