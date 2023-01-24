@@ -42,3 +42,11 @@ dog_trainer_console:
 
 dog_trainer_shell:
 	docker exec -it dog_trainer /bin/bash
+
+rethinkdb_delete_data:
+	docker container stop rethinkdb
+	docker container rm rethinkdb
+	docker volume prune -f
+	docker-compose -f docker-compose.local_deploy.yml up -d --force-recreate --no-deps --build rethinkdb
+	docker compose -f docker-compose.local_deploy.yml restart dog_trainer #restart to recreate dog db
+	docker-compose -f docker-compose.local_deploy.yml up -d --force-recreate --no-deps --build control
