@@ -2,10 +2,15 @@ FROM ubuntu:22.04
 RUN whoami
 
 RUN ln -s /usr/share/zoneinfo/UTC /etc/localtime
-RUN DEBIAN_FRONTEND=noninteractive apt update -y && apt-get install -y --no-install-recommends tzdata git golang ansible bash vim curl httpie python3-pip unzip
-ARG cachebust2
+RUN DEBIAN_FRONTEND=noninteractive apt-get update -y && apt-get install -y --no-install-recommends tzdata git golang ansible bash vim curl httpie python3-pip unzip make gcc jq
+
+#terraform-provider-dog
 RUN git clone --depth=1 https://github.com/relaypro-open/terraform-provider-dog.git
-WORKDIR terraform-provider-dog/dog-import
+WORKDIR /terraform-provider-dog
+RUN make
+
+#dog-import
+WORKDIR /terraform-provider-dog/dog-import
 # pre-copy/cache go.mod for pre-downloading dependencies and only redownloading them in subsequent builds if they change
 RUN go mod download
 RUN go build
@@ -27,5 +32,10 @@ RUN ls -latr
 RUN unzip terraform_1.3.7_linux_amd64.zip -d /bin/
 COPY terraform terraform
 
+#.terraformrc set to use local copy of provider
+COPY terraformrc /root/.terraformrc
+
+ARG cachebust2
 COPY terraform_setup.sh /
 CMD /bin/bash -c "/terraform_setup.sh" && /bin/bash -c "sleep infinity"
+#CMD /bin/bash -c "sleep infinity"

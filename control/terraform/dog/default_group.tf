@@ -6,4 +6,7 @@ resource "dog_group" "test_qa" {
   ec2_security_group_ids = [
   ]
   provider = dog.docker
+  vars = {
+    "test" = "dog_group-test_qa"
+  }
 }

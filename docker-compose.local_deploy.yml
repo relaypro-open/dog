@@ -10,7 +10,10 @@ services:
       - DOG_API_KEY=guest
       - DOG_API_ENDPOINT=http://kong:8000/api/V2
       - TF_VAR_dog_api_key_docker=guest
-      - CACHEBUSTE=$$(date)
+    depends_on:
+      - "dog_trainer"
+      - "dog_agent"
+      - "dog_agent_ex"
   csc:
     container_name: "csc"
     build:
@@ -55,7 +58,7 @@ services:
     volumes:
       - ./dog_agent_home:/root
   nginx-proxy:
-    container_name: "dog-nginx-proxy"
+    container_name: "nginx-proxy"
     image: jwilder/nginx-proxy
     ports:
       - "80:80"
