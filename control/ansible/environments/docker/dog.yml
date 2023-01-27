@@ -1,0 +1,5 @@
+---
+plugin: community.dog.dog_inventory
+add_ec2_groups: false
+only_include_active: true
+dog_url: http://kong:8000/api/V2

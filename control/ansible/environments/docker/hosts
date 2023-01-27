@@ -1,3 +1,2 @@
-[docker]
-bfa55d83705c	hostkey=elixir-node-123
-8f174bdc4278	hostkey=erlang-node-123
+[all:vars]
+example=file_based_variable

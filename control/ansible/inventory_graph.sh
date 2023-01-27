@@ -1,2 +1,2 @@
 #!/bin/bash
-ansible-inventory -i dog.yml --graph
+ansible-inventory -i environments/docker/ --graph

@@ -1,0 +1,8 @@
+---
+- hosts: all
+  gather_facts: true
+
+  tasks:
+    - name: A simple list loop
+      debug: msg="My lucky numbers is {{ item }}"
+      loop: "{{ [1, [2, 3], 4, 'five', 10, 11, 12, 13, 14, 15, 16, 17, 18, 19, 20] }}" 

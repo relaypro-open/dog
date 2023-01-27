@@ -1,2 +1,2 @@
 #!/bin/bash
-ansible all -i dog.yml -m shell -a hostname
+ansible all -i environments/docker/ -m shell -a hostname
