@@ -80,6 +80,9 @@ services:
     depends_on:
       - "dog_trainer"
   dog_trainer:
+    environment:
+      - VIRTUAL_HOST=dog
+      - VIRTUAL_PATH=/api
     container_name: "dog-trainer"
     build: 
       context: "./dog_trainer"
@@ -96,7 +99,7 @@ services:
       context: "./kong"
       dockerfile: Dockerfile
     environment:
-      - VIRTUAL_HOST=dog
+      - VIRTUAL_HOST=kong
       - VIRTUAL_PATH=/api
       - KONG_DATABASE=off
       - KONG_PROXY_ACCESS_LOG=/dev/stdout
