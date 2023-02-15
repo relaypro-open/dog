@@ -7,9 +7,9 @@ services:
     ports:
       - "22:22"
     environment:
-      - DOG_API_KEY=guest
+      - DOG_API_TOKEN=eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiIwZDY3NGRhNGFjNzYxMWVkYThmNzhmNzdmYTUyMWI2ZSJ9.PASNsZCTJihOO6ffBO2g-7N-OQWVI5KsnP7bq5Pi3aE
       - DOG_API_ENDPOINT=http://kong:8000/api/V2
-      - TF_VAR_dog_api_key_docker=guest
+      - TF_VAR_dog_api_token_docker=eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiIwZDY3NGRhNGFjNzYxMWVkYThmNzhmNzdmYTUyMWI2ZSJ9.PASNsZCTJihOO6ffBO2g-7N-OQWVI5KsnP7bq5Pi3aE
     depends_on:
       - "dog_trainer"
       - "dog_agent"
@@ -108,6 +108,8 @@ services:
       - KONG_ADMIN_ERROR_LOG=/dev/stderr
       - KONG_ADMIN_LISTEN=0.0.0.0:8001, 0.0.0.0:8444 ssl
       - KONG_DECLARATIVE_CONFIG=/kong.yml
+    depends_on:
+      - "csc"
     ports:
       - "8000:8000"
       - "8443:8443"

@@ -8,21 +8,21 @@ services:
   - name: dog_trainer
     paths:
     - /
-  plugins:
-  - name: key-auth
-    service: dog_trainer
-    config: 
-      key_names:
-      - apikey
-      key_in_body: false
-      key_in_header: true
-      key_in_query: true
-      hide_credentials: false
-      run_on_preflight: true
+
+plugins:
+- name: jwt
+  service: dog_trainer
+  config:
+    secret_is_base64: false
+    run_on_preflight: true
 
 consumers:
 - username: guest
-  custom_id: ansible-id
-  keyauth_credentials:
-  - consumer: guest
-  - key: guest
+
+jwt_secrets:
+- consumer: guest
+  key: 0d674da4ac7611eda8f78f77fa521b6e
+  secret: guest
+  algorithm: HS256
+    #rsa_public_key: "-----BEGIN PUBLIC KEY-----\nMIIBIjANBgkqhkiG9w0BAQEFAAOCAQ8AMIIBCgKCAQEAsY6kuaiLq3oiJlTaQgIe\n081Gs8ZEEAlFVdjc1Cjyz87ye7rCQGm35VgxfadQIIKNeP/Ec297lCbC14fG0Cmy\n35SeS/0JhBLYTfu5t296hgRx6IzvSkE1AS7pD4bY4KIbWtJsX4eJhzu/En18h950\nDtsOKdYr9uN1oYvIawlY90oIASaCk0O6c4QO2kaQWAEn0r4EoENcMbLT9ROa39YY\nEIHWHsbdYc0yRINAMAKtMqwfuHJLsELNrcew+QtCIox3NTSflgaRKboC9C5q9LFP\nurokTF1dHoDUmHVhTbaBbBTklD7uaKCoN2OKvACaZi2hJ+E0s5k8vE1e04aci6Re\nqQIDAQAB\n-----END PUBLIC KEY-----"
+    #algorithm: RS256
