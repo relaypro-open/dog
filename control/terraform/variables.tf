@@ -1,4 +1,4 @@
-variable "dog_api_key_docker" {
+variable "dog_api_token_docker" {
   type = string
   sensitive = true
 }
