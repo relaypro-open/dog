@@ -28,6 +28,11 @@ RUN python3 -m pip install pyjwt cryptography ipython
 RUN ansible-galaxy collection install git+https://github.com/relaypro-open/community.dog.git
 COPY dog.yml /ansible/dog.yml
 
+#rethinkdb
+RUN pip3 install rethinkdb python-benedict
+RUN mkdir scripts
+COPY scripts scripts
+
 #terraform
 RUN curl https://releases.hashicorp.com/terraform/1.3.7/terraform_1.3.7_linux_amd64.zip --output terraform_1.3.7_linux_amd64.zip 
 #COPY terraform_1.3.7_linux_amd64.zip terraform_1.3.7_linux_amd64.zip 
@@ -39,5 +44,4 @@ COPY terraform terraform
 COPY terraformrc /root/.terraformrc
 
 ARG cachebust2
-COPY terraform_setup.sh /
-CMD /bin/bash -c "/terraform_setup.sh" && /bin/bash -c "sleep infinity"
+CMD /bin/bash -c "/terraform/terraform_setup.sh" && /bin/bash -c "sleep infinity"
