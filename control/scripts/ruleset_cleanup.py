@@ -5,7 +5,7 @@ from pprint import pprint
 from benedict import benedict
 
 r = RethinkDB()
-conn = r.connect(host='rethinkdb', db='dog')
+conn = r.connect(host='localhost', db='dog', user="dog_trainer", password="v1kkmtGZ6SAk")
 rulesets_result = r.table('ruleset').run(conn)
 rulesets = []
 rulesets_updated = benedict()
@@ -13,8 +13,8 @@ rulesets_updated = benedict()
 for ru in rulesets_result:
     rulesets.append(ru)
     for ruleset in rulesets:
-        #pprint(ruleset)
-        ruleset_id = ruleset.pop('id')
+        pprint(ruleset.get('id'))
+        ruleset_id = ruleset.get('id')
         ruleset_updated = benedict()
         ruleset_updated['name'] = ruleset['name']
         ruleset_updated['profile_id'] = ruleset['profile_id']
