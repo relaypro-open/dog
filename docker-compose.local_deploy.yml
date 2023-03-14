@@ -91,6 +91,8 @@ services:
       - "csc"
       - "rethinkdb"
       - "rabbitmq"
+    ports:
+      - "7070:7070"
     volumes:
       - ./dog_trainer_home:/root
   kong:
@@ -122,6 +124,7 @@ services:
     image: "rethinkdb"
     ports:
       - "8080:8080"
+      - "28015:28015"
   rabbitmq:
     container_name: "rabbitmq"
     build: ./rabbitmq
