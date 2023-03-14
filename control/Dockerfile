@@ -21,10 +21,10 @@ WORKDIR /
 
 #ansible
 COPY ansible ansible
-RUN pip3 install pip credstash --upgrade
+RUN pip3 install pip --upgrade
+RUN python3 -m pip install pyjwt cryptography ipython credstash deepmerge
 RUN python3 -m pip install -e git+https://github.com/Phonebooth/api-client.git#egg=api-client
 RUN python3 -m pip install -e git+https://github.com/relaypro-open/dog_api_python.git#egg=dog_api_python
-RUN python3 -m pip install pyjwt cryptography ipython
 RUN ansible-galaxy collection install git+https://github.com/relaypro-open/community.dog.git
 COPY dog.yml /ansible/dog.yml
 
