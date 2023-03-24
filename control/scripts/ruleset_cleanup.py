@@ -33,8 +33,9 @@ for ru in rulesets_result:
         outbound_rules = ruleset.get('rules').get('outbound')
         outbound_rules_updated = []
         for outbound_rule in outbound_rules:
-            if inbound_rule.get('order'):
+            if outbound_rule.get('order'):
                 del outbound_rule['order']
+            outbound_rules_updated.append(inbound_rule)
             #outbound_rule['order'] = 100
         ruleset_updated['rules', 'outbound'] = outbound_rules_updated
         rulesets_updated[ruleset_id] = ruleset_updated
