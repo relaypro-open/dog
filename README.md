@@ -55,7 +55,7 @@ dog is your network guard dog.
 - Manages cloud security groups across multiple regions (EC2).
 - Compatible with Docker, LXD localhost firewall rules.
 - [Terraform Provider](https://github.com/relaypro-open/terraform-provider-dog): Can be managed as code with a Terraform provider.
-- [Ansible Plugins](https://github.com/relaypro-open/community.dog): Can be used as a dynamic inventory source and/or as a connector, replaceing ssh.
+- [Ansible Plugins](https://github.com/relaypro-open/community.dog): Can be used as a dynamic inventory source and/or as a connector, replacing ssh.
 
 ## Components
 
