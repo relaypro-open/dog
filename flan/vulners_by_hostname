@@ -1,0 +1,20 @@
+{
+	"OpenSSH 7.2p2 Ubuntu 4ubuntu2.10 (cpe:/a:openbsd:openssh:7.2p2)(cpe:/o:linux:linux_kernel)": {
+		"locations": {
+			"e0b83b4a6acb": {
+				"ports": [
+					"22 (tcp, open, syn-ack)"
+				]
+			}
+		},
+			"vulns": [
+			{
+				"app": "OpenSSH 7.2p2 Ubuntu 4ubuntu2.10 (cpe:/a:openbsd:openssh:7.2p2)(cpe:/o:linux:linux_kernel)",
+				"name": "PACKETSTORM:140070",
+				"type": "packetstorm",
+				"severity": 7.8,
+				"description": ""
+			}
+			]
+	}
+}
