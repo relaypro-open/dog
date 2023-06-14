@@ -5,4 +5,4 @@ only_include_active: true
 dog_url: http://kong:8000/api/V2
 unique_id_key: name
 dog_env: docker
-dog_inventory: docker
+dog_fact: docker

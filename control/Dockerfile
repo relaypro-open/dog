@@ -5,7 +5,7 @@ RUN ln -s /usr/share/zoneinfo/UTC /etc/localtime
 RUN DEBIAN_FRONTEND=noninteractive apt-get update -y && apt-get install -y --no-install-recommends tzdata git golang ansible bash vim curl httpie python3-pip unzip make gcc jq
 
 #terraform-provider-dog
-ARG CACHEBUST=5
+ARG CACHEBUST=10
 RUN git clone --depth=1 https://github.com/relaypro-open/terraform-provider-dog.git
 WORKDIR /terraform-provider-dog
 RUN make
@@ -41,7 +41,7 @@ RUN unzip terraform_1.3.7_linux_amd64.zip -d /bin/
 COPY terraform terraform
 
 #.terraformrc set to use local copy of provider
-COPY terraformrc /root/.terraformrc
+#COPY terraformrc /root/.terraformrc
 
 ARG cachebust2
 CMD /bin/bash -c "/terraform/terraform_setup.sh" && /bin/bash -c "sleep infinity"

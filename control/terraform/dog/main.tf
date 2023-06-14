@@ -2,7 +2,7 @@ terraform {
   required_providers {
     dog = {
       source = "relaypro-open/dog"
-      version = ">=1.0.21"
+      version = ">=1.0.24"
     }
   }
 }

@@ -25,8 +25,6 @@ services:
       - PORT=9000
     ports:
      - "9000:9000"
-        #volumes:
-        #  - ./csc_tmp:/tmp
   dog_agent_ex:
     container_name: "dog-agent-ex"
     build: 
@@ -81,6 +79,7 @@ services:
       - "dog_trainer"
   dog_trainer:
     environment:
+      - VIRTUAL_PORT=7070
       - VIRTUAL_HOST=dog
       - VIRTUAL_PATH=/api
     container_name: "dog-trainer"
@@ -136,3 +135,11 @@ services:
       - "15672:15672"
     depends_on:
       - "csc"
+  flan:
+    container_name: "flan"
+    build:
+      context: "./flan"
+    environment:
+      - NGINX_PORT=80
+      - VIRTUAL_HOST=dog
+      - VIRTUAL_PATH=/flan_api
