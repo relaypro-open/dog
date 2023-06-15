@@ -7,6 +7,8 @@ name = "pypi"
 rethinkdb = "*"
 ipython = "*"
 python-benedict = "*"
+api-client = {git = "https://github.com/Phonebooth/api-client.git"}
+dog-api-python = {git = "https://github.com/relaypro-open/dog_api_python.git"}
 
 [dev-packages]
 

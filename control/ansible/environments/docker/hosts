@@ -1,2 +1,7 @@
 [all:vars]
 example=file_based_variable
+
+[test_group]
+elixir-node-123	hosts_host_var=test
+[test_group:vars]
+hosts_group_var=tes
