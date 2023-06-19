@@ -21,62 +21,6 @@ ansible_envs = ["mob_qa", "beta_qa", "stage.qa"]
 # dog_url = "http://kong:8000/api/V2"
 # dog_env = "docker"
 # ansible_envs = ["docker"]
-ansible_to_dog_group_mapping_qa = {'android': "build_master",
-                                   'android_build_node': "build_slave",
-                                   'apiproxy': 'p19_apiproxy_qa',
-                                   'asterisk': 'asterisk_qa',
-                                   'authbroker': None,
-                                   'bauth': 'auth_qa',
-                                   'bauth_db': 'bauth_db_qa',
-                                   'build_master': 'build_master',
-                                   'build_slave': 'build_slave',
-                                   'build_slave_container': 'build_slave_rdu',
-                                   'ci': "build_master",
-                                   'consul': 'consul_qa',
-                                   'consul_us-east-1': 'consul_qa',
-                                   'consul_us-west-2': 'consul_qa',
-                                   'cortex': None,
-                                   'cortex_nodes': 'cortex_broker_qa',
-                                   'deep-gpu': None,
-                                   'dog': None,
-                                   'dog_test': 'dog_test',
-                                   'dog_trainer': 'dog_qa',
-                                   'ec2_jump': None,
-                                   'fabric': 'fabric_qa',
-                                   'fabric-broker': 'fabric_broker_qa',
-                                   'flexvpn': 'flexvpn_qa',
-                                   'gemini': 'gemini_qa',
-                                   'gpu-rdu': None,
-                                   'ibot-global': "ibot_beta_qa",
-                                   'ibot-rdu': None,
-                                   'ibot_backup': 'ibot_backup_qa',
-                                   'ibot_broker': 'ibot_broker_qa',
-                                   'ibot_db': 'ibot_db_qa',
-                                   'ibot_fdb': 'ibot_fdb_qa',
-                                   'ibot_proxy': 'ibot_proxy_qa',
-                                   'info': 'info_qa',
-                                   'iperf': 'iperf_qa',
-                                   'ipersist': 'ipersist_qa',
-                                   'ipersist_db': 'ipersist_db_qa',
-                                   'iquery-api-global': None,
-                                   'ispeech': 'ispeech_qa',
-                                   'ispeech_proxy': 'ispeech_qa',
-                                   'iupload': 'iupload_qa',
-                                   'keycloak': 'keycloak_qa',
-                                   'kibana': None,
-                                   'kiwi': None,
-                                   'local': None,
-                                   'logger': 'isw_logger_qa',
-                                   'opengrok': 'opengrok_qa',
-                                   'relayprem': None,
-                                   'test': None,
-                                   'tpu': None,
-                                   'ungrouped': None,
-                                   'vpn': None,
-                                   'wiki': 'wiki_qa',
-                                   'xdoc': 'xdoc_qa'}
-group_mapping = ansible_to_dog_group_mapping_qa
-
 
 def create_client():
     creds_path = os.path.expanduser('~/.dog/credentials')
@@ -124,6 +68,7 @@ def generate_rough_group_mapping(client, groups):
 
 def update_groups(client, groups):
     for ansible_group_name, group_vars in groups.items():
+        group_mapping = generate_rough_group_mapping(client, groups)
         dog_group_name = None
         if ansible_group_name == "ungrouped":
             continue
