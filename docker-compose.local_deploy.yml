@@ -1,4 +1,16 @@
 version: "3.9"
+secrets:
+  DOG_API_TOKEN:
+    file: ./compose_secrets.txt
+  DOG_AGENT_BROKER_PASSWORD:
+    file: ./compose_secrets.txt
+  DOG_TRAINER_SMTP_PASSWORD:
+    file: ./compose_secrets.txt
+  DOG_TRAINER_DB_PASSWORD:
+    file: ./compose_secrets.txt
+  DOG_TRAINER_BROKER_PASSWORD:
+    file: ./compose_secrets.txt
+
 services:
   control:
     container_name: "control"
@@ -7,13 +19,16 @@ services:
     ports:
       - "22:22"
     environment:
-      - DOG_API_TOKEN=eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiIwZDY3NGRhNGFjNzYxMWVkYThmNzhmNzdmYTUyMWI2ZSJ9.PASNsZCTJihOO6ffBO2g-7N-OQWVI5KsnP7bq5Pi3aE
+      - DOG_API_TOKEN=/var/run/dog_api_token
       - DOG_API_ENDPOINT=http://kong:8000/api/V2
-      - TF_VAR_dog_api_token_docker=eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiIwZDY3NGRhNGFjNzYxMWVkYThmNzhmNzdmYTUyMWI2ZSJ9.PASNsZCTJihOO6ffBO2g-7N-OQWVI5KsnP7bq5Pi3aE
+      - TF_VAR_dog_api_token_docker=/var/run/dog_api_token
+    secrets:
+      - DOG_API_TOKEN
     depends_on:
       - "dog_trainer"
       - "dog_agent"
       - "dog_agent_ex"
+
   csc:
     container_name: "csc"
     build:
@@ -55,6 +70,8 @@ services:
       - SHELL=/bin/sh
     volumes:
       - ./dog_agent_home:/root
+    secrets:
+      - DOG_AGENT_BROKER_PASSWORD
   nginx-proxy:
     container_name: "nginx-proxy"
     image: jwilder/nginx-proxy
@@ -94,6 +111,11 @@ services:
       - "7070:7070"
     volumes:
       - ./dog_trainer_home:/root
+    secrets:
+      - DOG_TRAINER_SMTP_PASSWORD
+      - DOG_TRAINER_DB_PASSWORD
+      - DOG_TRAINER_BROKER_PASSWORD
+
   kong:
     container_name: "kong"
     build:
@@ -111,13 +133,12 @@ services:
       - KONG_DECLARATIVE_CONFIG=/kong.yml
     depends_on:
       - "csc"
+      - "dog_trainer"
     ports:
       - "8000:8000"
       - "8443:8443"
       - "8001:8001"
       - "8444:8444"
-    depends_on:
-      - "dog_trainer"
   rethinkdb:
     container_name: "rethinkdb"
     image: "rethinkdb"
