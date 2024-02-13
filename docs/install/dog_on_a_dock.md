@@ -15,6 +15,7 @@ from scratch, as well as a way to easily try out dog.
 
 [Docker Compose](https://github.com/docker/compose) is used to create multiple Docker containers.
 
+[Docker buildx](https://github.com/docker/buildx) used by Compose to build the containers.
 
 ### Licensed Dependencies
 

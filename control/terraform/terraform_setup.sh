@@ -1,8 +1,7 @@
 #!/bin/bash -x 
 #sleep 15
-cd /terraform/ && terraform init
-mkdir /tmp/dog-import/
-#cd /terraform && dog-import docker /tmp/dog-import "docker_"
+export DOG_API_TOKEN=$(cat $DOG_API_TOKEN_FILE)
+export TF_VAR_dog_api_token_docker=$(cat $TF_VAR_dog_api_token_docker_FILE)
 #mv /tmp/dog-import/host.tf /terrraform/dog/
 chmod u+x /terraform/dog/*.sh
 #/terraform/dog/host_import.sh

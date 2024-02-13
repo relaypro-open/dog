@@ -1,8 +1,10 @@
-FROM ubuntu:22.04
+FROM ubuntu:23.04
 RUN whoami
 
 RUN ln -s /usr/share/zoneinfo/UTC /etc/localtime
-RUN DEBIAN_FRONTEND=noninteractive apt-get update -y && apt-get install -y --no-install-recommends tzdata git golang ansible bash vim curl httpie python3-pip unzip make gcc jq
+RUN DEBIAN_FRONTEND=noninteractive apt-get update -y && apt-get install -y --no-install-recommends \
+build-essential tzdata git golang ansible bash vim curl httpie python3-full python3-pip \
+python3-virtualenv unzip make gcc jq
 
 #terraform-provider-dog
 ARG CACHEBUST=10
@@ -21,15 +23,18 @@ WORKDIR /
 
 #ansible
 COPY ansible ansible
-RUN pip3 install pip --upgrade
-RUN python3 -m pip install pyjwt cryptography ipython credstash deepmerge PyYaml
-RUN python3 -m pip install -e git+https://github.com/Phonebooth/api-client.git#egg=api-client
-RUN python3 -m pip install -e git+https://github.com/relaypro-open/dog_api_python.git#egg=dog_api_python
+#RUN pip3 install pip --upgrade
+
+RUN python3 -m virtualenv ve
+
+RUN /ve/bin/pip install pyjwt cryptography ipython credstash deepmerge PyYaml
+RUN /ve/bin/pip install -e git+https://github.com/Phonebooth/api-client.git#egg=api-client
+RUN /ve/bin/pip install -e git+https://github.com/relaypro-open/dog_api_python.git#egg=dog_api_python
 RUN ansible-galaxy collection install git+https://github.com/relaypro-open/community.dog.git
 COPY dog.yml /ansible/dog.yml
 
 #rethinkdb
-RUN pip3 install rethinkdb python-benedict
+RUN /ve/bin/pip install rethinkdb python-benedict
 RUN mkdir scripts
 COPY scripts scripts
 
@@ -43,5 +48,6 @@ COPY terraform terraform
 #.terraformrc set to use local copy of provider
 #COPY terraformrc /root/.terraformrc
 
-ARG cachebust2
-CMD /bin/bash -c "/terraform/terraform_setup.sh" && /bin/bash -c "sleep infinity"
+COPY scripts scripts/
+RUN chmod u+x scripts/entrypoint.sh
+ENTRYPOINT [ "scripts/entrypoint.sh" ]
