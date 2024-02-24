@@ -9,7 +9,7 @@ a centralized firewall management system.
 
 - [Runtime Dependencies](#runtime-dependencies)
 - [Build Dependencies](#build-dependencies)
-- [CA Certificate Creation](#ca-certificate-creation)
+- [Certificate Creation](#certificate-creation)
 - [RethinkDB setup](#rethinkdb-setup)
 - [RabbitMQ setup](#rabbitmq-setup)
 - [App setup](#app-setup)
@@ -20,7 +20,7 @@ a centralized firewall management system.
 
 ## Runtime Dependencies
 
-- linux 4.x+ (Ubuntu 16.04 tested)
+- linux 4.x+ (Ubuntu 22.04 tested)
 - diffutils
 - coreutils
 - rabbitmq-server 3.7+
@@ -29,38 +29,15 @@ a centralized firewall management system.
 
 ## Build Dependencies
 
-- erlang 22+
+- erlang 24
 
-### CA Certificate Creation
+### Certificate Creation
 
 If you already have a CA and per-server certs, you can reuse them, or buy new ones
 (costly).
 You can create your own self-signed certs with your own Certificate Authority.
 
-Examples Ansible scripts are provided to get you started.  Examples use Credstash
-to securely store the CA files [credstash](https://github.com/fugue/credstash)
-
-#### Create CA
-
-Create the CA and store it in a secure location,
- use it in a deletable location like a tmpfs or an encrypted filesystem and then
- delete after use.
-
-- example:
-
-```bash
-scripts/ansible/dog_create_ca_cert.yml
-```
-
-#### Create server cert
-
-One TLS cert must be created for each dog_trainer and dog_agent server
-
-- example:
-
-```bash
-scripts/ansible/setup_dog_cert.yml
-```
+One option to get you started is: https://github.com/relaypro-open/csc
 
 ### RethinkDB setup
 
@@ -82,15 +59,7 @@ for that purpose.
 
 #### Create database tables and indexes
 
-```bash
-#edit src/rethink_db_setup.erl
-$ ./rebar3 shell
-```
-
-```erlang
-1> rethink_db_setup:setup_rethinkdb($ENV_NAME).
-2> dog_ipset:set_hash(dog_ipset:create_hash(dog_ipset:create_ipsets())).
-```
+Automatically created on dog_trainer start.
 
 #### Import default Services
 
@@ -146,7 +115,9 @@ avoiding having to have agents connect to a rabbitmq in another region across
 the public internet.
 [RabbitMQ federation](https://www.rabbitmq.com/federation.html)  
 
-### App setup
+
+
+## Install 
 
 Create directories:
 
@@ -154,16 +125,90 @@ Create directories:
 ./install.sh
 ```
 
-If credentials stored in credstash, run to fill templates:
+### Use github Release archive
 
-```bash
-cd dog_trainer/template_setup
-$ ../rebar3 shell
-1> template_setup:main().
-#otherwise copy config/templates/*.dtl to config/ and manually update credentials.
+github.com builds releases for Ubuntu x86
+
+Download latest release archive:
+https://github.com/relaypro-open/dog_trainer/releases
+
+Extract archive to /opt/dog_trainer/
+
+Create configuration file /etc/dog_trainer/dog_trainer.config, based on this template:
+
+```erlang
+[
+    {dog_trainer, [
+        {keepalive_alert_seconds, 60}
+        ]},
+    {sync, [
+        {growl, none},
+        {log, [warnings, errors]},
+        {non_descendants, fix},
+        {executable, auto},
+        {whitelisted_modules, []},
+        {excluded_modules, []}
+    ]},
+    {lager, [
+        {handlers, [
+            {lager_console_backend, 
+        	[none,
+        	   {lager_default_formatter, [time, 
+        		" [", severity, "] ", pid, " (", {turbine_id, "non-turbine"}, ") ==> ", message, "\n"]}]},
+            {{lager_file_backend, "error_log"}, [{file, "/var/log/dog_trainer/error.log"}, {level, error}]},
+            {{lager_file_backend, "console_log"}, [{file, "/var/log/dog_trainer/console.log"}, {level, info }]}
+        ]},
+        {crash_log, "/var/log/dog_trainer/crash.log"},
+        {tracefiles, [
+        	   ]},
+        {async_threshold, 10000},
+        {sieve_threshold, 5000},
+        {sieve_window, 100}
+    ]},
+    {thumper, [
+        {substitution_rules, []},
+        {thumper_svrs, [default, publish]},
+        {brokers, [
+            {default, [
+                {rabbitmq_config,
+                    [
+                        {host, "DOG_RABBITMQ_HOST"},
+                        {port, 5673},
+                        {api_port, 15672},
+                        {virtual_host, <<"dog">>},
+                        {user, <<"dog_trainer">>},
+                        {password, <<"PASSWORD">>},
+                        {ssl_options, [{cacertfile, "/opt/dog_trainer/priv/certs/rabbitmq/ca/cacert.pem"},
+                                       {certfile, "/opt/dog_trainer/priv/certs/rabbitmq/client/cert.pem"},
+                                       {keyfile, "/opt/dog_trainer/priv/certs/rabbitmq/client/key.pem"},
+                                       {verify, verify_none},
+                                       {fail_if_no_peer_cert, true}
+                                      ]},
+                         {broker_config,
+                             {thumper_tx,
+                                 ["/opt/dog_trainer/priv/broker.tx"]}}
+                    ]}]},
+            {publish, [{rabbitmq_config, default}]}
+        ]},
+        {queuejournal,
+            [
+                {enabled, true},
+                {dir, "/var/db/dog_trainer/queuejournal"},
+                {memqueue_max, 10000},
+                {check_journal, true}
+            ]
+        }
+    ]},
+    {erlcloud, [
+      {aws_config, [
+          {ec2_host, "ec2.us-east-1.amazonaws.com"}
+      ]}
+    ]}
+].
 ```
 
-## Build Release Deploy
+
+### Build Release Deploy
 
 ```bash
 $ rebar as $ENV tar

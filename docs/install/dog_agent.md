@@ -19,7 +19,7 @@ a centralized firewall management system.
 
 ## Runtime Dependencies
 
-- linux 4.x+ (CentOS 6, Ubuntu 16.04+ tested)
+- linux 4.x+ (Ubuntu 22.04 tested)
 - iptables
 - ipset
 - Only supports cloud public IP addresses on AWS EC2.
@@ -35,35 +35,6 @@ apt install ipset
 #install https://github.com/jordanrinke/ipsets-persistent plugin
 sudo echo "dog     ALL=NOPASSWD: /sbin/ipset, /sbin/iptables-save, /sbin/iptables-restore , /sbin/ip6tables-save, /sbin/ip6tables-restore" > /etc/sudoers.d/dog
 ```
-
-- CentOS:
-
-```bash
-yum install iptables
-yum install iptables-ipv6
-yum install ipset
-
-#increase ip_set kernel module max_sets (defaults to 256 on CentOS 6):    
-iptables -F
-modprobe -r xt_set
-modprobe -r ip_set_hash_net
-modprobe -r ip_set
-echo 'options ip_set max_sets=8192' > /etc/modprobe.d/ip_set.conf
-modprobe ip_set
-modprobe ip_set_hash_net
-load xt_set
-modprobe xt_set
-
-#make filesytem match ubuntu:
-ln -s usr/sbin/ipset /sbin/ipset
-mkdir /etc/iptables
-ln -s /etc/iptables/rules.ipset /etc/sysconfig/ipset
-```
-
-- ```sudo visudo```, add this following line:
-
-```dog     ALL=NOPASSWD: /sbin/ipset, /sbin/iptables-save, /sbin/iptables-restore , /sbin/ip6tables-save, /sbin/ip6tables-restore```
-
 - Create 'dog' user:
 
 ```bash
@@ -79,26 +50,92 @@ chown dog: /tmp/erl_pipes
 
 ## Build Dependencies
 
-- erlang 22+
+- erlang 24
 
 ## Certificate Creation
 
 Each agent must have its own unique client certificate to connect to rabbitmq.
 
-Check https://github.com/relaypro-open/dog_trainer/README.md#ca-certificate-creation for steps.
+Create client certs to connect to the rabbitmq broker.  One option to get you started is: https://github.com/relaypro-open/csc
 
-## Deploy Configuration
+## Install
 
-```bash
-apt install virtualenv
-virtualenv /opt/dog_env
-source /opt/dog_env/bin/activate
-pip install -r /opt/dog/requirements.txt
-cd /opt/dog
-ansible.sh
+### Use github Release archive
+
+github.com builds releases for Ubuntu x86
+
+Download latest release archive:
+https://github.com/relaypro-open/dog/releases
+
+Extract archive to /opt/dog/
+
+Create configuration file /etc/dog/dog.config, based on this template:
+
+```erlang
+[{dog,[{enforcing,true},{use_ipsets,true},{version,"public"}]},
+ {kernel,[{inet_dist_use_interface,{127,0,0,1}}]},
+ {lager,
+     [{handlers,
+          [{lager_console_backend,[{level,info}]},
+           {lager_file_backend,
+               [{file,"/var/log/dog/error.log"},{level,error}]},
+           {lager_file_backend,
+               [{file,"/var/log/dog/console.log"},{level,info}]}]},
+      {crash_log,"/var/log/dog/crash.log"},
+      {tracefiles,[]},
+      {async_threshold,10000},
+      {sieve_threshold,5000},
+      {sieve_window,100},
+      {colored,true}]},
+ {sync,
+     [{growl,none},
+      {log,[all]},
+      {non_descendants,fix},
+      {executable,auto},
+      {whitelisted_modules,[]},
+      {excluded_modules,[]}]},
+ {thumper,
+     [{substitution_rules,
+          [{fqdn,{dog_interfaces,fqdn,[]}},
+           {environment,{dog_config,environment,[]}},
+           {location,{dog_config,location,[]}},
+           {group,{dog_config,group,[]}},
+           {hostkey,{dog_config,hostkey,[]}}]},
+      {thumper_svrs,[default,publish]},
+      {brokers,
+          [{default,
+               [{rabbitmq_config,
+                    [{host,"DOG_RABBITMQ_HOST"},
+                     {port,5673},
+                     {api_port,15672},
+                     {virtual_host,<<"dog">>},
+                     {user,<<"dog">>},
+                     {password,<<"PASSWORD">>},
+                     {ssl_options,
+                         [{cacertfile,"/var/consul/data/pki/certs/ca.crt"},
+                          {certfile,"/var/consul/data/pki/certs/server.crt"},
+                          {keyfile,"/var/consul/data/pki/private/server.key"},
+                          {verify,verify_peer},
+                          {server_name_indication,disable},
+                          {fail_if_no_peer_cert,true}]},
+                     {broker_config,
+                         {thumper_tx,
+                             {callback,{dog_config,broker_config,[]}}}}]}]},
+           {publish,[{rabbitmq_config,default}]}]},
+      {queuejournal,
+          [{enabled,false},
+           {dir,"/opt/dog/queuejournal"},
+           {memqueue_max,10000},
+           {check_journal,true}]}]}].
 ```
 
-## Build Release Deploy
+Create /etc/dog/config.json based on this template:
+
+```json
+{"environment":"*","group":"DOG_GROUP","hostkey":"UNIQUE_HOST_KEY","location":"*"}
+```
+
+### Build Release Deploy
 
 ```$ rebar as $ENV tar```
 
@@ -119,7 +156,7 @@ sudo rm /opt/dog
 sudo ln -s dog.$VERSION /opt/dog
 ```
 
-## Run
+### Run
 
 - Systemd(Ubuntu+)
 
@@ -129,14 +166,6 @@ systemctl enable dog
 systemctl start dog
 ```
 
-- SysV init (CentOS 6-)
-
-```bash
-cp config/dog.init /etc/init.d/dog
-chkconfig dog on
-/etc/init.d/dog start
-```
-
-## Logs
+### Logs
 
 ```/var/log/dog/```
