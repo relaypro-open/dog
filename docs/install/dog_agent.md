@@ -12,8 +12,7 @@ a centralized firewall management system.
 - [Build Dependencies](#build-dependencies)
 - [Certificate Creation](#certificate-creation)
 - [Deploy Configuration](#deploy-configuration)
-- [Build Release Deploy](#build-release-deploy)
-- [Deploy](#deploy)
+- [Install](#install)
 - [Run](#run)
 - [Logs](#logs)
 
@@ -137,24 +136,11 @@ Create /etc/dog/config.json based on this template:
 
 ### Build Release Deploy
 
-```$ rebar as $ENV tar```
+```
+$ rebar as public tar
+```
 
 copy tar to system, extract to /opt/dog_trainer
-
-## Deploy
-
-```bash
-#update version metadata:
-vim -o config/$ENV.sys.config src/dog.app.src rebar.config
-$ ./rebar3 as $ENV tar
-
-sudo mkdir /opt/dog.$VERSION
-cd /opt/dog.$VERSION
-sudo tar xf dog.$VERSION.tar.gz
-sudo chown -R dog: /opt/dog.$VERSION
-sudo rm /opt/dog
-sudo ln -s dog.$VERSION /opt/dog
-```
 
 ### Run
 
