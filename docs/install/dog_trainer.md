@@ -13,7 +13,7 @@ a centralized firewall management system.
 - [RethinkDB setup](#rethinkdb-setup)
 - [RabbitMQ setup](#rabbitmq-setup)
 - [App setup](#app-setup)
-- [Build Release Deploy](#build-release-deploy)
+- [Install](#install)
 - [Run](#run)
 - [Logs](#logs)
 - [Deploy Agents](#deploy-agents)
