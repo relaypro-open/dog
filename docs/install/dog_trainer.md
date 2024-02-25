@@ -136,6 +136,7 @@ Extract archive to /opt/dog_trainer/
 
 Create configuration file /etc/dog_trainer/dog_trainer.config, based on this template:
 
+{% raw %}
 ```erlang
 [
     {dog_trainer, [
@@ -206,6 +207,7 @@ Create configuration file /etc/dog_trainer/dog_trainer.config, based on this tem
     ]}
 ].
 ```
+{% endraw %}
 
 
 ### Build Release Deploy
