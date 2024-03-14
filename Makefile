@@ -40,8 +40,14 @@ dog_agent_build_tar:
 dog_agent_restart:
 	docker compose -f docker-compose.local_deploy.yml restart dog_agent
 
+dog_agent_shell:
+	docker exec -it dog-agent /bin/bash
+
 dog_park_rebuild:
 	docker compose -f docker-compose.local_deploy.yml up -d --force-recreate --no-deps --build dog_park
+
+dog_park_build_tar-local:
+	cd dog_park; docker build --no-cache --output=. --target=tar -f Dockerfile --build-arg REACT_APP_DOG_API_ENV="local" --build-arg REACT_APP_DOG_API_HOST="http://dog" .
 
 dog_trainer_build:
 	 docker compose -f docker-compose.local_deploy.yml build dog_trainer --no-cache
@@ -63,6 +69,9 @@ dog_trainer_shell:
 
 kong_rebuild:
 	docker compose -f docker-compose.local_deploy.yml up -d --force-recreate --no-deps --build kong
+
+rabbitmq_build:
+	 docker compose -f docker-compose.local_deploy.yml build rabbitmq --no-cache
 
 rabbitmq_rebuild:
 	docker compose -f docker-compose.local_deploy.yml up -d --force-recreate --no-deps --build rabbitmq
