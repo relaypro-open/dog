@@ -32,7 +32,7 @@ dog_agent_ex_build_tar:
 	cd dog_agent_ex; docker build --output=. --target=tar -f Dockerfile.local_deploy .
 
 dog_agent_rebuild:
-	docker compose -f docker-compose.local_deploy.yml up -d --force-recreate --no-deps --build dog_agent
+	BUILDKIT_PROGRESS=plain docker compose -f docker-compose.local_deploy.yml up -d --force-recreate --no-deps --build dog_agent
 
 dog_agent_build_tar:
 	cd dog_agent; docker build --output=. --target=tar -f Dockerfile.local_deploy .
@@ -48,6 +48,9 @@ dog_park_rebuild:
 
 dog_park_build_tar-local:
 	cd dog_park; docker build --no-cache --output=. --target=tar -f Dockerfile --build-arg REACT_APP_DOG_API_ENV="local" --build-arg REACT_APP_DOG_API_HOST="http://dog" .
+
+dog_park_build_tar-pro:
+	cd dog_park; docker build --no-cache --output=. --target=tar -f Dockerfile --build-arg REACT_APP_DOG_API_ENV="pro" --build-arg REACT_APP_DOG_API_HOST="https://dog-pro.relaydev.sh" .
 
 dog_trainer_build:
 	 docker compose -f docker-compose.local_deploy.yml build dog_trainer --no-cache
