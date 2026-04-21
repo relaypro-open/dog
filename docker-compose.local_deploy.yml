@@ -1,4 +1,3 @@
-version: "3.9"
 secrets:
   DOG_API_TOKEN:
     file: ./compose_secrets.txt
@@ -16,8 +15,8 @@ services:
     container_name: "control"
     build:
       context: "./control"
-    ports:
-      - "22:22"
+    #ports:
+    #- "22:22"
     environment:
       - DOG_API_TOKEN=/var/run/dog_api_token
       - DOG_API_ENDPOINT=http://kong:8000/api/V2
@@ -27,7 +26,6 @@ services:
     depends_on:
       - "dog_trainer"
       - "dog_agent"
-      - "dog_agent_ex"
 
   csc:
     container_name: "csc"
@@ -40,24 +38,15 @@ services:
       - PORT=9000
     ports:
      - "9000:9000"
-  dog_agent_ex:
-    container_name: "dog-agent-ex"
-    build: 
-      context: "./dog_agent_ex"
-      dockerfile: Dockerfile.local_deploy
-    depends_on:
-      - "csc"
-      - "dog_trainer"
-      - "rabbitmq"
-    cap_add:
-      - NET_ADMIN
-    environment:
-      - SHELL=/bin/sh
-    volumes:
-      - ./dog_agent_ex_home:/root
+    healthcheck:
+      test: ["CMD", "bash", "-c", "</dev/tcp/localhost/9000"]
+      interval: 5s
+      timeout: 5s
+      retries: 10
   dog_agent:
     container_name: "dog-agent"
-    build: 
+    hostname: "dog-agent"
+    build:
       context: "./dog_agent"
       dockerfile: Dockerfile.local_deploy
     depends_on:
@@ -68,8 +57,29 @@ services:
       - NET_ADMIN
     environment:
       - SHELL=/bin/sh
+      - CERT_SOURCE=csc
     volumes:
       - ./dog_agent_home:/root
+    secrets:
+      - DOG_AGENT_BROKER_PASSWORD
+
+  dog_agent_2:
+    container_name: "dog-agent-2"
+    hostname: "dog-agent-2"
+    build:
+      context: "./dog_agent"
+      dockerfile: Dockerfile.local_deploy
+    depends_on:
+      - "csc"
+      - "dog_trainer"
+      - "rabbitmq"
+    cap_add:
+      - NET_ADMIN
+    environment:
+      - SHELL=/bin/sh
+      - CERT_SOURCE=csc
+    volumes:
+      - ./dog_agent_2_home:/root
     secrets:
       - DOG_AGENT_BROKER_PASSWORD
   nginx-proxy:
@@ -100,13 +110,16 @@ services:
       - VIRTUAL_HOST=dog
       - VIRTUAL_PATH=/api
     container_name: "dog-trainer"
-    build: 
+    build:
       context: "./dog_trainer"
       dockerfile: Dockerfile.local_deploy
     depends_on:
-      - "csc"
-      - "rethinkdb"
-      - "rabbitmq"
+      csc:
+        condition: service_healthy
+      rethinkdb:
+        condition: service_healthy
+      rabbitmq:
+        condition: service_healthy
     ports:
       - "7070:7070"
     volumes:
@@ -141,10 +154,18 @@ services:
       - "8444:8444"
   rethinkdb:
     container_name: "rethinkdb"
+    build:
+      context: "./rethinkdb"
+      dockerfile: Dockerfile
     image: "rethinkdb"
     ports:
       - "8080:8080"
       - "28015:28015"
+    healthcheck:
+      test: ["CMD", "bash", "-c", "</dev/tcp/localhost/28015"]
+      interval: 5s
+      timeout: 5s
+      retries: 10
   rabbitmq:
     container_name: "rabbitmq"
     build: ./rabbitmq
@@ -154,13 +175,10 @@ services:
     ports:
       - "5673:5673"
       - "15672:15672"
+    healthcheck:
+      test: ["CMD", "rabbitmq-diagnostics", "check_port_connectivity"]
+      interval: 5s
+      timeout: 5s
+      retries: 10
     depends_on:
       - "csc"
-  flan:
-    container_name: "flan"
-    build:
-      context: "./flan"
-    environment:
-      - NGINX_PORT=80
-      - VIRTUAL_HOST=dog
-      - VIRTUAL_PATH=/flan_api
