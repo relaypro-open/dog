@@ -12,6 +12,10 @@ dog_trainer
 dog_agent
 dog_agent_ex
 dog_park
+community.dog
+dog_api_golang
+dog_api_python
+terraform-provider-dog
 *_home
 csc
 csc_tmp
