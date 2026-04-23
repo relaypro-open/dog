@@ -1,5 +1,5 @@
 #FROM kong/kong:latest-ubuntu
-FROM docker.io/kong/kong:2.8-ubuntu
+FROM --platform=linux/amd64 docker.io/kong/kong:2.8-ubuntu
 
 RUN whoami
 

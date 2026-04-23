@@ -11,21 +11,21 @@ secrets:
     file: ./compose_secrets.txt
 
 services:
-  control:
-    container_name: "control"
-    build:
-      context: "./control"
-    #ports:
-    #- "22:22"
-    environment:
-      - DOG_API_TOKEN=/var/run/dog_api_token
-      - DOG_API_ENDPOINT=http://kong:8000/api/V2
-      - TF_VAR_dog_api_token_docker=/var/run/dog_api_token
-    secrets:
-      - DOG_API_TOKEN
-    depends_on:
-      - "dog_trainer"
-      - "dog_agent"
+  #control:
+  #  container_name: "control"
+  #  build:
+  #    context: "./control"
+  #  #ports:
+  #  #- "22:22"
+  #  environment:
+  #    - DOG_API_TOKEN=/var/run/dog_api_token
+  #    - DOG_API_ENDPOINT=http://kong:8000/api/V2
+  #    - TF_VAR_dog_api_token_docker=/var/run/dog_api_token
+  #  secrets:
+  #    - DOG_API_TOKEN
+  #  depends_on:
+  #    - "dog_trainer"
+  #    - "dog_agent_1"
 
   csc:
     container_name: "csc"
@@ -43,9 +43,9 @@ services:
       interval: 5s
       timeout: 5s
       retries: 10
-  dog_agent:
-    container_name: "dog-agent"
-    hostname: "dog-agent"
+  dog_agent_1:
+    container_name: "dog-agent-1"
+    hostname: "dog-agent-1"
     build:
       context: "./dog_agent"
       dockerfile: Dockerfile.local_deploy
@@ -58,8 +58,7 @@ services:
     environment:
       - SHELL=/bin/sh
       - CERT_SOURCE=csc
-    volumes:
-      - ./dog_agent_home:/root
+      - DOG_GROUP=local_group
     secrets:
       - DOG_AGENT_BROKER_PASSWORD
 
@@ -78,17 +77,18 @@ services:
     environment:
       - SHELL=/bin/sh
       - CERT_SOURCE=csc
-    volumes:
-      - ./dog_agent_2_home:/root
+      - DOG_GROUP=local_group
     secrets:
       - DOG_AGENT_BROKER_PASSWORD
   nginx-proxy:
     container_name: "nginx-proxy"
-    image: jwilder/nginx-proxy
+    image: jwilder/nginx-proxy:alpine
     ports:
       - "80:80"
+    privileged: true
     volumes:
       - /var/run/docker.sock:/tmp/docker.sock:ro
+      #- /var/run/podman/podman.sock:/tmp/docker.sock:ro
     environment:
       - DEFAULT_HOST=dog
     depends_on:
